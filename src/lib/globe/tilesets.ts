@@ -1,6 +1,5 @@
 import {
   Cesium3DTileset,
-  Ion,
   IonResource,
   type Viewer,
 } from 'cesium';
@@ -18,10 +17,6 @@ export async function loadWorldTileset(viewer: Viewer): Promise<Cesium3DTileset 
   const devKey = import.meta.env.VITE_PUBLIC_GOOGLE_TILES_DEV_KEY as string | undefined;
   const hasProxy = import.meta.env.VITE_PUBLIC_HAS_GOOGLE_TILES === 'true';
   const ionToken = import.meta.env.VITE_PUBLIC_CESIUM_ION_TOKEN as string | undefined;
-
-  if (ionToken) {
-    Ion.defaultAccessToken = ionToken;
-  }
 
   // 1. Direct Google key (dev only — never set in production)
   if (devKey) {

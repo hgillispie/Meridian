@@ -78,6 +78,30 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Mantine AppShell.Main defaults to `min-height: 100vh - header - footer`,
+   which means it *grows* with content. The Cesium viewer has no intrinsic
+   bounds, so Main was ballooning to ~2000px tall and the globe canvas
+   was pushed below the fold. Pin Main to the exact remaining-viewport
+   height so the globe canvas can resolve `height: 100%` against it. */
+.mantine-AppShell-main {
+  height: calc(
+    100vh -
+      var(--app-shell-header-offset, 48px) -
+      var(--app-shell-footer-offset, 88px)
+  );
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+/* Cesium viewer hard-sizing — ensures the canvas fills its GlobeStage
+   container regardless of Mantine AppShell's inherited layout rules. */
+.cesium-viewer,
+.cesium-widget,
+.cesium-widget canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 /* Custom scrollbars that match the palette */
 ::-webkit-scrollbar {
   width: 8px;

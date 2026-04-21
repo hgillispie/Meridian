@@ -95,7 +95,12 @@ export function Globe() {
   return (
     <ResiumViewer
       ref={viewerRef}
-      full
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+      }}
       // Strip stock widgets — we render our own chrome
       animation={false}
       timeline={false}
@@ -110,12 +115,14 @@ export function Globe() {
       // Use default imagery (Cesium Ion Bing); 3D Tiles are added on top
       terrain={undefined}
     >
-      {/* Initial camera: Pacific-centric, zoomed out to show the fleet */}
+      {/* Initial camera: Singapore Strait regional view — one of the busiest
+          shipping corridors on Earth. Close enough (~2,500 km altitude) that
+          AIS vessel billboards are visible on first render. */}
       <CameraFlyTo
-        destination={Cartesian3.fromDegrees(150, 5, 22_000_000)}
+        destination={Cartesian3.fromDegrees(104, 2, 2_500_000)}
         orientation={{
           heading: CesiumMath.toRadians(0),
-          pitch: CesiumMath.toRadians(-90),
+          pitch: CesiumMath.toRadians(-65),
           roll: 0,
         }}
         duration={0}
