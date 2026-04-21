@@ -38,5 +38,8 @@ dist-ssr
 # Test
 coverage/
 
+# TypeScript incremental build info
+*.tsbuildinfo
+
 # macOS
 .DS_Store
