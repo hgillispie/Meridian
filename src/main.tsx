@@ -5,6 +5,7 @@ import '@mantine/notifications/styles.css';
 import '@mantine/spotlight/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/charts/styles.css';
+import 'cesium/Build/Cesium/Widgets/widgets.css';
 import './styles/globals.css';
 import './styles/tokens.css';
 import { App } from './App';
