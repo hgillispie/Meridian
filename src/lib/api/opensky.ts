@@ -30,6 +30,10 @@ export async function fetchStatesInBbox(
     headers: { accept: 'application/json' },
   });
 
+  // 503/504 from our proxy means OpenSky is overloaded or timed out —
+  // return an empty array so the layer renders cleanly instead of
+  // throwing and triggering a TanStack retry storm.
+  if (res.status === 503 || res.status === 504) return [];
   if (!res.ok) {
     throw new Error(`OpenSky proxy error ${res.status}`);
   }
