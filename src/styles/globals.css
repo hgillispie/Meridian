@@ -1,0 +1,95 @@
+/* =================================================================
+   Meridian — global styles
+   -----------------------------------------------------------------
+   Self-hosted fonts live under /public/fonts/. Drop-in Geist Sans
+   (Vercel) + IBM Plex Mono (IBM) — both OFL / SIL-licensed.
+   ================================================================= */
+
+@font-face {
+  font-family: 'Geist Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/GeistVariableVF.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/GeistMonoVariableVF.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/IBMPlexMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/IBMPlexMono-Medium.woff2') format('woff2');
+}
+
+/* -------- Reset / normalization -------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-feature-settings: 'ss01', 'cv01', 'cv02', 'cv03';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular numerics everywhere — command-center digits must line up */
+.mono,
+code,
+kbd,
+pre,
+samp,
+[data-mono] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Kill the blue tap highlight on iOS */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom scrollbars that match the palette */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--meridian-border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--meridian-border-strong);
+}

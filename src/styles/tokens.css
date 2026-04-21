@@ -1,0 +1,60 @@
+/* =================================================================
+   Meridian — design tokens (§5.2 "Operations room after dark")
+   -----------------------------------------------------------------
+   Raw palette + Mantine CSS variable overrides. Anything declared
+   here is what gives the app its Meridian flavor independent of
+   Mantine's defaults.
+   ================================================================= */
+
+:root,
+[data-mantine-color-scheme='dark'] {
+  /* ---- Raw palette ---- */
+  --meridian-bg: #07090d;
+  --meridian-surface: #0f1319;
+  --meridian-surface-elevated: #161c25;
+  --meridian-border: #232b37;
+  --meridian-border-strong: #334157;
+  --meridian-text: #e6edf3;
+  --meridian-text-muted: #8892a0;
+  --meridian-text-dim: #5a6472;
+
+  --meridian-accent: #00e5a8;
+  --meridian-accent-dim: #008663;
+  --meridian-warning: #ffb020;
+  --meridian-critical: #ff5a5f;
+  --meridian-satellite: #7bd3ff;
+
+  /* ---- Mantine overrides (dark scheme) ---- */
+  --mantine-color-body: var(--meridian-bg);
+  --mantine-color-text: var(--meridian-text);
+  --mantine-color-dimmed: var(--meridian-text-muted);
+  --mantine-color-default: var(--meridian-surface);
+  --mantine-color-default-hover: var(--meridian-surface-elevated);
+  --mantine-color-default-border: var(--meridian-border);
+  --mantine-color-placeholder: var(--meridian-text-dim);
+  --mantine-color-anchor: var(--meridian-accent);
+
+  /* Paper / card surface */
+  --mantine-color-white: var(--meridian-text);
+  --mantine-color-black: var(--meridian-bg);
+}
+
+/* AppShell regions — borders between panels use the subtle border token */
+.mantine-AppShell-header,
+.mantine-AppShell-navbar,
+.mantine-AppShell-aside,
+.mantine-AppShell-footer,
+.mantine-AppShell-main {
+  background-color: var(--meridian-surface);
+  border-color: var(--meridian-border) !important;
+}
+
+.mantine-AppShell-main {
+  background-color: var(--meridian-bg);
+}
+
+/* Spotlight palette skin */
+.mantine-Spotlight-content {
+  background-color: var(--meridian-surface);
+  border: 1px solid var(--meridian-border);
+}
