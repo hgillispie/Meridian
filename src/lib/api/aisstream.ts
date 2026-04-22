@@ -106,6 +106,9 @@ export function createAisStreamClient(apiKey: string): AisStreamClient {
     if (closed) return;
     emitStatus('connecting');
     ws = new WebSocket(ENDPOINT);
+    // AISStream delivers JSON over binary frames; default binaryType is 'blob'
+    // which would need async decoding. Switch to arraybuffer + TextDecoder.
+    ws.binaryType = 'arraybuffer';
 
     ws.addEventListener('open', () => {
       retryMs = 1000;
@@ -115,9 +118,17 @@ export function createAisStreamClient(apiKey: string): AisStreamClient {
       }
     });
 
+    const decoder = new TextDecoder();
     ws.addEventListener('message', (ev) => {
+      const text =
+        typeof ev.data === 'string'
+          ? ev.data
+          : ev.data instanceof ArrayBuffer
+            ? decoder.decode(ev.data)
+            : '';
+      if (!text) return;
       try {
-        const parsed: AisStreamMessage = JSON.parse(ev.data as string);
+        const parsed: AisStreamMessage = JSON.parse(text);
         const vessel = toVessel(parsed);
         if (vessel) vesselHandlers.forEach((h) => h(vessel));
       } catch {

@@ -8,6 +8,10 @@ type AisStatus = 'connecting' | 'open' | 'closed' | 'error' | 'disabled';
 type UseAisStreamResult = {
   vessels: Map<number, Vessel>;
   status: AisStatus;
+  /** Monotonic counter that bumps on every batched vessel update. Consumers
+   *  should use this as a side-effect dependency instead of `vessels`, which
+   *  is a stable ref and would never trigger re-runs. */
+  tick: number;
 };
 
 /**
@@ -19,7 +23,7 @@ export function useAisStream(bbox: Bbox, enabled: boolean): UseAisStreamResult {
   const apiKey = import.meta.env.VITE_PUBLIC_AISSTREAM_KEY as string | undefined;
   const clientRef = useRef<AisStreamClient | null>(null);
   const vesselsRef = useRef<Map<number, Vessel>>(new Map());
-  const [, forceRender] = useState(0);
+  const [tick, setTick] = useState(0);
   const [status, setStatus] = useState<AisStatus>(apiKey ? 'connecting' : 'disabled');
 
   // Create the client once
@@ -38,7 +42,7 @@ export function useAisStream(bbox: Bbox, enabled: boolean): UseAisStreamResult {
       if (rafId == null) {
         rafId = window.requestAnimationFrame(() => {
           rafId = null;
-          forceRender((n) => (n + 1) % 1_000_000);
+          setTick((n) => (n + 1) % 1_000_000);
         });
       }
     });
@@ -61,5 +65,5 @@ export function useAisStream(bbox: Bbox, enabled: boolean): UseAisStreamResult {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bbox.west, bbox.south, bbox.east, bbox.north, enabled]);
 
-  return { vessels: vesselsRef.current, status };
+  return { vessels: vesselsRef.current, status, tick };
 }

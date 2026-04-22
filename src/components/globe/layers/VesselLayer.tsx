@@ -34,7 +34,7 @@ function chevronSvg(color: string): string {
 export function VesselLayer({ bbox }: { bbox: Bbox }) {
   const enabled = useLayerStore((s) => s.layers.vessels.enabled);
   const { viewer } = useCesium();
-  const { vessels } = useAisStream(bbox, enabled);
+  const { vessels, tick } = useAisStream(bbox, enabled);
   const upsertVessels = useLiveDataStore((s) => s.upsertVessels);
 
   // Maintain a stable Cesium EntityCollection owned by this layer.
@@ -44,7 +44,8 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
   useEffect(() => {
     if (!enabled) return;
     upsertVessels(vessels.values());
-  }, [vessels, enabled, upsertVessels]);
+    // vessels is a stable ref; tick bumps on every batched update.
+  }, [tick, vessels, enabled, upsertVessels]);
 
   useEffect(() => {
     if (!viewer) return;
@@ -95,7 +96,8 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
         entityMap.delete(mmsi);
       }
     }
-  }, [viewer, vessels, enabled, entityMap]);
+    // vessels is a stable ref — use `tick` to re-run on every batched update.
+  }, [viewer, tick, vessels, enabled, entityMap]);
 
   return null;
 }

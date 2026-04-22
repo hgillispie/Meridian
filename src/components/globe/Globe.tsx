@@ -30,10 +30,22 @@ export function Globe() {
   const [viewer, setViewer] = useState<CesiumViewer | null>(null);
   const bbox = useViewportBbox(viewer);
 
+  // Resium populates `cesiumElement` on the ref asynchronously, so a one-shot
+  // useEffect with `[]` deps can miss it. Poll with rAF until it shows up.
   useEffect(() => {
-    const v = viewerRef.current?.cesiumElement;
-    if (!v) return;
-    setViewer(v);
+    let rafId = 0;
+    const tick = () => {
+      const v = viewerRef.current?.cesiumElement;
+      if (v) {
+        setViewer(v);
+        return;
+      }
+      rafId = window.requestAnimationFrame(tick);
+    };
+    tick();
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
