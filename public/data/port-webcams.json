@@ -4,26 +4,26 @@
     {
       "id": "sgsin-tuas",
       "portCode": "SGSIN",
-      "title": "Singapore — Tuas Megaport",
-      "provider": "Demo placeholder",
-      "type": "image",
-      "src": "https://picsum.photos/seed/sgsin-tuas/1280/720",
-      "location": [103.6409, 1.2589],
+      "title": "Singapore — Tanjong Pagar Terminal",
+      "provider": "YouTube live (verified)",
+      "type": "youtube",
+      "src": "https://www.youtube.com/embed/2HNyJb0bKHE",
+      "location": [103.8326, 1.2640],
       "hero": true,
-      "description": "World's second-busiest transshipment hub. Tuas phased opening 2022-2040 consolidating all of Singapore's container ops.",
-      "attribution": "picsum.photos (demo)"
+      "description": "World's second-busiest transshipment hub. Live view from the Tanjong Pagar Terminal area.",
+      "attribution": "YouTube / Port of Singapore livestream"
     },
     {
       "id": "nlrtm-europoort",
       "portCode": "NLRTM",
-      "title": "Rotterdam — Europoort / Maasvlakte",
-      "provider": "Demo placeholder",
-      "type": "image",
-      "src": "https://picsum.photos/seed/nlrtm-europoort/1280/720",
+      "title": "Rotterdam — Maasvlakte 2 / FutureLand",
+      "provider": "YouTube live (verified)",
+      "type": "youtube",
+      "src": "https://www.youtube.com/embed/qYy_7AJ4DKo",
       "location": [4.0515, 51.9587],
       "hero": true,
       "description": "Europe's largest port; Maasvlakte 2 is fully automated with AGV yards and remote-operated STS cranes.",
-      "attribution": "picsum.photos (demo)"
+      "attribution": "YouTube / Port of Rotterdam — FutureLand"
     },
     {
       "id": "uslax-pier400",
@@ -40,14 +40,14 @@
     {
       "id": "deham-waltershof",
       "portCode": "DEHAM",
-      "title": "Hamburg — Waltershof Terminal",
-      "provider": "Demo placeholder",
-      "type": "image",
-      "src": "https://picsum.photos/seed/deham-waltershof/1280/720",
+      "title": "Hamburg — Port Live (channel feed)",
+      "provider": "YouTube live (verified)",
+      "type": "youtube",
+      "src": "https://www.youtube.com/embed/live_stream?channel=UCG9Ks48ORETgwkGtcobM55A",
       "location": [9.9296, 53.5384],
       "hero": true,
       "description": "Germany's largest seaport, 110 km inland on the Elbe. HHLA Burchardkai has been semi-automated since 2011.",
-      "attribution": "picsum.photos (demo)"
+      "attribution": "YouTube / Hamburg Port Live"
     },
     {
       "id": "cnsha-yangshan",
@@ -162,13 +162,13 @@
     {
       "id": "jpukb-rokko",
       "portCode": "JPUKB",
-      "title": "Kobe — Rokko Island",
-      "provider": "Demo placeholder",
-      "type": "image",
-      "src": "https://picsum.photos/seed/jpukb-rokko/1280/720",
+      "title": "Kobe — Rokko Mountains Live",
+      "provider": "YouTube live (verified)",
+      "type": "youtube",
+      "src": "https://www.youtube.com/embed/live_stream?channel=UCVTH015zuOa09M6-s2Q2kjg",
       "location": [135.2490, 34.6687],
-      "description": "Recovered to ~50% of pre-1995-earthquake volume; major Japanese transshipment hub on the Seto Inland Sea.",
-      "attribution": "picsum.photos (demo)"
+      "description": "Recovered to ~50% of pre-1995-earthquake volume; major Japanese transshipment hub. Feed shows Rokko Island & bay from the mountains.",
+      "attribution": "YouTube / Rokko Mountains Live"
     },
     {
       "id": "zadur-pier2",
