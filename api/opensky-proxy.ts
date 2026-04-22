@@ -102,7 +102,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   const url = new URL(req.url);
   const upstream = new URL(STATES_URL);
-  for (const [k, v] of url.searchParams.entries()) upstream.searchParams.set(k, v);
+  url.searchParams.forEach((v, k) => upstream.searchParams.set(k, v));
 
   const headers: Record<string, string> = {
     'user-agent': 'Meridian/0.1 (+https://github.com/hgillispie/Meridian)',

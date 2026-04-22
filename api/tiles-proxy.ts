@@ -35,8 +35,10 @@ export default async function handler(req: Request): Promise<Response> {
   const upstreamPath = subpath && subpath !== '/' ? subpath : '/root.json';
   const upstream = new URL(`${GOOGLE_BASE}${upstreamPath}`);
 
-  // Preserve incoming query params (Google uses `session` etc.) then add key
-  for (const [k, v] of url.searchParams.entries()) upstream.searchParams.set(k, v);
+  // Preserve incoming query params (Google uses `session` etc.) then add key.
+  // URLSearchParams is iterable directly — using `.entries()` here tripped
+  // the WebWorker-only lib typings in api/tsconfig.json.
+  url.searchParams.forEach((v, k) => upstream.searchParams.set(k, v));
   upstream.searchParams.set('key', key);
 
   const upstreamRes = await fetch(upstream.toString(), {
