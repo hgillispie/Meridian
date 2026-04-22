@@ -1,0 +1,38 @@
+{
+  "_comment": "Curated enrichment for commercial Earth-observation satellites. Keys are NORAD catalog numbers. When a TLE entry's NORAD id matches, its Satellite record is enriched with operator/mission/category. Leave unknown birds uncategorized — the layer will fall back to the TLE name.",
+  "operators": {
+    "39634": { "operator": "ESA",       "mission": "Sentinel-1A (C-SAR)",     "category": "eo-radar" },
+    "41456": { "operator": "ESA",       "mission": "Sentinel-1B (C-SAR)",     "category": "eo-radar" },
+    "40697": { "operator": "ESA",       "mission": "Sentinel-2A (MSI)",       "category": "eo-optical" },
+    "42063": { "operator": "ESA",       "mission": "Sentinel-2B (MSI)",       "category": "eo-optical" },
+    "41335": { "operator": "ESA",       "mission": "Sentinel-3A (OLCI)",      "category": "eo-other" },
+    "43437": { "operator": "ESA",       "mission": "Sentinel-3B (OLCI)",      "category": "eo-other" },
+    "42069": { "operator": "ESA",       "mission": "Sentinel-5P (TROPOMI)",   "category": "eo-other" },
+    "46984": { "operator": "ESA/NOAA",  "mission": "Sentinel-6 MF (altimeter)","category": "eo-other" },
+    "62261": { "operator": "ESA",       "mission": "Sentinel-1C (C-SAR)",     "category": "eo-radar" },
+    "39084": { "operator": "USGS/NASA", "mission": "Landsat-8 (OLI/TIRS)",    "category": "eo-optical" },
+    "49260": { "operator": "USGS/NASA", "mission": "Landsat-9 (OLI-2/TIRS-2)","category": "eo-optical" },
+    "27424": { "operator": "NASA",      "mission": "Aqua (MODIS)",            "category": "eo-other" },
+    "25994": { "operator": "NASA",      "mission": "Terra (MODIS)",           "category": "eo-other" },
+    "36036": { "operator": "ESA",       "mission": "SMOS (L-band radiometer)","category": "eo-other" },
+    "38012": { "operator": "Airbus DS", "mission": "Pléiades-HR 1A",          "category": "eo-optical" },
+    "39019": { "operator": "Airbus DS", "mission": "Pléiades-HR 1B",          "category": "eo-optical" },
+    "38755": { "operator": "Airbus DS", "mission": "SPOT-6",                  "category": "eo-optical" },
+    "40053": { "operator": "Airbus DS", "mission": "SPOT-7",                  "category": "eo-optical" },
+    "32060": { "operator": "Maxar",     "mission": "WorldView-1",             "category": "eo-optical" },
+    "35946": { "operator": "Maxar",     "mission": "WorldView-2",             "category": "eo-optical" },
+    "40115": { "operator": "Maxar",     "mission": "WorldView-3",             "category": "eo-optical" },
+    "41848": { "operator": "Maxar",     "mission": "WorldView-4",             "category": "eo-optical" },
+    "33331": { "operator": "Maxar",     "mission": "GeoEye-1",                "category": "eo-optical" },
+    "45465": { "operator": "Capella",   "mission": "Capella-2 (X-SAR)",       "category": "eo-radar" },
+    "43823": { "operator": "ICEYE",     "mission": "ICEYE-X2 (X-SAR)",        "category": "eo-radar" },
+    "44389": { "operator": "ICEYE",     "mission": "ICEYE-X4 (X-SAR)",        "category": "eo-radar" },
+    "46496": { "operator": "ICEYE",     "mission": "ICEYE-X6 (X-SAR)",        "category": "eo-radar" }
+  },
+  "planetPrefixes": {
+    "_comment": "Name-prefix match for Planet's numerous Dove / SuperDove / SkySat birds since per-ID enrichment would be 200+ entries.",
+    "FLOCK":   { "operator": "Planet",  "mission": "Dove/SuperDove flock",   "category": "eo-optical" },
+    "SKYSAT":  { "operator": "Planet",  "mission": "SkySat (sub-m optical)", "category": "eo-optical" },
+    "DOVE":    { "operator": "Planet",  "mission": "Dove",                   "category": "eo-optical" }
+  }
+}

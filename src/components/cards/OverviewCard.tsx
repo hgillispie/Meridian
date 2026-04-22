@@ -1,11 +1,17 @@
 import { Stack, Text, Group, Paper, RingProgress, Box } from '@mantine/core';
+import { useLiveDataStore } from '@/store/liveData';
+import { useSatelliteStore } from '@/store/satellites';
 
 /**
  * Default right-rail card when nothing is selected (§6.1).
- * Phase 0 renders static placeholder counts; Phase 2+ pipes in real
- * figures from the Zustand stores.
+ * Live feed counts are pulled from their respective zustand stores so the
+ * numbers tick with the actual entity streams.
  */
 export function OverviewCard() {
+  const vesselCount = useLiveDataStore((s) => Object.keys(s.vessels).length);
+  const aircraftCount = useLiveDataStore((s) => Object.keys(s.aircraft).length);
+  const satelliteCount = useSatelliteStore((s) => Object.keys(s.byId).length);
+
   return (
     <Stack gap="md">
       <Stack gap={2}>
@@ -18,11 +24,11 @@ export function OverviewCard() {
       </Stack>
 
       <Group grow gap="xs">
-        <Stat label="Vessels" value="—" phase="Phase 2" />
-        <Stat label="Aircraft" value="—" phase="Phase 2" />
+        <Stat label="Vessels" value={formatCount(vesselCount)} phase="Phase 2" />
+        <Stat label="Aircraft" value={formatCount(aircraftCount)} phase="Phase 2" />
       </Group>
       <Group grow gap="xs">
-        <Stat label="Satellites" value="—" phase="Phase 3" />
+        <Stat label="Satellites" value={formatCount(satelliteCount)} phase="Phase 3" />
         <Stat label="Events" value="—" phase="Phase 5" />
       </Group>
 
@@ -85,14 +91,14 @@ export function OverviewCard() {
             <RingProgress
               size={40}
               thickness={4}
-              sections={[{ value: 6, color: 'meridian' }]}
+              sections={[{ value: 40, color: 'meridian' }]}
             />
             <Stack gap={0}>
               <Text size="xs" fw={500}>
                 Build progress
               </Text>
               <Text size="xs" c="dimmed">
-                1 / 10 phases
+                4 / 10 phases
               </Text>
             </Stack>
           </Group>
@@ -100,6 +106,12 @@ export function OverviewCard() {
       </Paper>
     </Stack>
   );
+}
+
+function formatCount(n: number): string {
+  if (n <= 0) return '—';
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
 }
 
 function Stat({ label, value, phase }: { label: string; value: string; phase: string }) {

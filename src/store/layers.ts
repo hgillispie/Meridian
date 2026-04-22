@@ -26,7 +26,7 @@ type LayerStore = {
 const DEFAULT_LAYERS: Record<LayerId, LayerState> = {
   vessels: { enabled: true, intensity: 1 },
   aircraft: { enabled: true, intensity: 1 },
-  satellites: { enabled: false, intensity: 1 },
+  satellites: { enabled: true, intensity: 1 },
   webcams: { enabled: false, intensity: 1 },
   gps: { enabled: false, intensity: 1 },
   disruptions: { enabled: true, intensity: 1 },

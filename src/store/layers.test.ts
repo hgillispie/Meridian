@@ -7,14 +7,14 @@ describe('layer store', () => {
     const { toggle } = useLayerStore.getState();
     toggle('vessels', true);
     toggle('aircraft', true);
-    toggle('satellites', false);
+    toggle('satellites', true);
   });
 
-  it('starts with vessels + aircraft enabled and satellites off', () => {
+  it('starts with vessels + aircraft + satellites enabled by default', () => {
     const { layers } = useLayerStore.getState();
     expect(layers.vessels.enabled).toBe(true);
     expect(layers.aircraft.enabled).toBe(true);
-    expect(layers.satellites.enabled).toBe(false);
+    expect(layers.satellites.enabled).toBe(true);
   });
 
   it('toggle flips enabled state', () => {

@@ -1,16 +1,19 @@
 import { Stack, Text, Group, Divider, ScrollArea, Badge } from '@mantine/core';
 import { useSelectionStore } from '@/store/selection';
 import { useLiveDataStore } from '@/store/liveData';
+import { useSatelliteStore } from '@/store/satellites';
 import { OverviewCard } from '../cards/OverviewCard';
 import { PlaceholderCard } from '../cards/PlaceholderCard';
 import { VesselCard } from '../cards/VesselCard';
 import { AircraftCard } from '../cards/AircraftCard';
+import { SatelliteCard } from '../cards/SatelliteCard';
 
 export function RightRail() {
   const selection = useSelectionStore((s) => s.selection);
   const vessels = useLiveDataStore((s) => s.vessels);
   const aircraft = useLiveDataStore((s) => s.aircraft);
   const cargoIcaos = useLiveDataStore((s) => s.cargoIcaos);
+  const satellitesById = useSatelliteStore((s) => s.byId);
 
   return (
     <Stack gap={0} h="100%">
@@ -37,9 +40,13 @@ export function RightRail() {
             const isCargo = !!prefix && cargoIcaos.has(prefix);
             return <AircraftCard aircraft={a} isCargo={isCargo} />;
           })()}
+          {selection?.kind === 'satellite' && (
+            <SatelliteCard satellite={satellitesById[Number(selection.id)]} />
+          )}
           {selection &&
             selection.kind !== 'vessel' &&
-            selection.kind !== 'aircraft' && <PlaceholderCard kind={selection.kind} />}
+            selection.kind !== 'aircraft' &&
+            selection.kind !== 'satellite' && <PlaceholderCard kind={selection.kind} />}
         </Stack>
       </ScrollArea>
     </Stack>

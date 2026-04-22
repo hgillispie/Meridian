@@ -9,7 +9,7 @@ import {
   type Viewer as CesiumViewer,
 } from 'cesium';
 import { loadWorldTileset } from '@/lib/globe/tilesets';
-import { VesselLayer, AircraftLayer } from './layers';
+import { VesselLayer, AircraftLayer, SatelliteLayer } from './layers';
 import { useViewportBbox } from '@/hooks/useViewportBbox';
 import { useSelectionStore, type SelectionKind } from '@/store/selection';
 
@@ -38,6 +38,11 @@ export function Globe() {
       const v = viewerRef.current?.cesiumElement;
       if (v) {
         setViewer(v);
+        // Dev-only diagnostic hook so the Claude Preview agent can inspect
+        // entities / camera state from the console.
+        if (import.meta.env.DEV) {
+          (window as unknown as { __viewer?: unknown }).__viewer = v;
+        }
         return;
       }
       rafId = window.requestAnimationFrame(tick);
@@ -144,6 +149,7 @@ export function Globe() {
         <>
           <VesselLayer bbox={bbox} />
           <AircraftLayer bbox={bbox} />
+          <SatelliteLayer />
         </>
       )}
     </ResiumViewer>

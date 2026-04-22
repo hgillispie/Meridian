@@ -65,6 +65,9 @@ importers:
       resium:
         specifier: ^1.19.0-beta.1
         version: 1.21.0(cesium@1.140.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      satellite.js:
+        specifier: 5.0.0
+        version: 5.0.0
       zod:
         specifier: ^3.23.8
         version: 3.25.76
@@ -1965,6 +1968,9 @@ packages:
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
+
+  satellite.js@5.0.0:
+    resolution: {integrity: sha512-ie3yiJ2LJAJIhVUKdYhgp7V0btXKAMImDjRnuaNfJGl8rjwP2HwVIh4HLFcpiXYEiYwXc5fqh5+yZqCe6KIwWw==}
 
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
@@ -4104,6 +4110,8 @@ snapshots:
   rrweb-cssom@0.8.0: {}
 
   safer-buffer@2.1.2: {}
+
+  satellite.js@5.0.0: {}
 
   saxes@6.0.0:
     dependencies:
