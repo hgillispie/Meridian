@@ -30,7 +30,7 @@ const DEFAULT_LAYERS: Record<LayerId, LayerState> = {
   webcams: { enabled: true, intensity: 1 },
   gps: { enabled: false, intensity: 1 },
   disruptions: { enabled: true, intensity: 1 },
-  lanes: { enabled: false, intensity: 0.6 },
+  lanes: { enabled: true, intensity: 0.85 },
   chokepoints: { enabled: true, intensity: 1 },
   weather: { enabled: false, intensity: 0.8 },
   traffic: { enabled: false, intensity: 1 },

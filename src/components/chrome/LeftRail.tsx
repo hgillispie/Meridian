@@ -36,9 +36,9 @@ const LAYERS: LayerDef[] = [
   { id: 'webcams', label: 'Port webcams', icon: Camera, phase: 6, liveIntensity: true },
   { id: 'gps', label: 'GPS integrity', icon: Radio, phase: 8 },
   { id: 'disruptions', label: 'Disruption zones', icon: AlertTriangle, phase: 5 },
-  { id: 'lanes', label: 'Shipping lanes', icon: Route, phase: 5 },
+  { id: 'lanes', label: 'Vessel routes', icon: Route, phase: 5, liveIntensity: false },
   { id: 'chokepoints', label: 'Chokepoints', icon: Anchor, phase: 5 },
-  { id: 'weather', label: 'Weather', icon: Wind, phase: 5 },
+  { id: 'weather', label: 'Weather', icon: Wind, phase: 5, liveIntensity: true },
   { id: 'traffic', label: 'Surface traffic', icon: Truck, phase: 6 },
 ];
 
