@@ -26,6 +26,7 @@ import {
 
 export function SatelliteLayer() {
   const enabled = useLayerStore((s) => s.layers.satellites.enabled);
+  const intensity = useLayerStore((s) => s.layers.satellites.intensity);
   const { viewer } = useCesium();
   const { satellites } = useSatellites(enabled);
   const setSatellites = useSatelliteStore((s) => s.setSatellites);
@@ -116,7 +117,7 @@ export function SatelliteLayer() {
         scale: isSelected ? 1.05 : 0.95,
         horizontalOrigin: HorizontalOrigin.CENTER,
         verticalOrigin: VerticalOrigin.CENTER,
-        color: Color.WHITE,
+        color: Color.WHITE.withAlpha(intensity),
         // Satellites live hundreds of km up — we want the glyph to
         // always be visible without x-ray through the planet. Small
         // buffer against depth-test glitches at LEO altitude.
@@ -130,7 +131,7 @@ export function SatelliteLayer() {
         entityMap.delete(id);
       }
     }
-  }, [viewer, enabled, visible, entityMap, selectedNorad]);
+  }, [viewer, enabled, visible, entityMap, selectedNorad, intensity]);
 
   // Orbit trace — only drawn for the currently selected satellite.
   useEffect(() => {

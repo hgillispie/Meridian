@@ -1,5 +1,5 @@
 import { Group, Stack, Text, ActionIcon, SegmentedControl, Slider } from '@mantine/core';
-import { Play, SkipBack, SkipForward, Rewind, FastForward } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Rewind, FastForward } from 'lucide-react';
 import { useClockStore } from '@/store/clock';
 import { useViewModeStore, type ViewMode } from '@/store/viewMode';
 
@@ -12,26 +12,56 @@ const VIEW_MODES: { label: string; value: ViewMode }[] = [
 ];
 
 export function BottomDock() {
-  const { speed, setSpeed, position, setPosition } = useClockStore();
+  const { speed, setSpeed, position, setPosition, playing, play, pause } =
+    useClockStore();
   const { mode, setMode } = useViewModeStore();
+
+  const nudge = (deltaHours: number) => {
+    setPosition(Math.max(-168, Math.min(0, position + deltaHours)));
+  };
 
   return (
     <Stack gap={0} h="100%">
       <Group h={40} px="md" gap="md" wrap="nowrap">
         <Group gap={4}>
-          <ActionIcon variant="subtle" color="gray" aria-label="Skip back 24h">
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            aria-label="Skip back 24h"
+            onClick={() => nudge(-24)}
+          >
             <SkipBack size={14} />
           </ActionIcon>
-          <ActionIcon variant="subtle" color="gray" aria-label="Rewind">
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            aria-label="Rewind 1h"
+            onClick={() => nudge(-1)}
+          >
             <Rewind size={14} />
           </ActionIcon>
-          <ActionIcon variant="filled" color="meridian" aria-label="Play">
-            <Play size={14} />
+          <ActionIcon
+            variant="filled"
+            color="meridian"
+            aria-label={playing ? 'Pause' : 'Play'}
+            onClick={() => (playing ? pause() : play())}
+          >
+            {playing ? <Pause size={14} /> : <Play size={14} />}
           </ActionIcon>
-          <ActionIcon variant="subtle" color="gray" aria-label="Fast forward">
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            aria-label="Fast forward 1h"
+            onClick={() => nudge(1)}
+          >
             <FastForward size={14} />
           </ActionIcon>
-          <ActionIcon variant="subtle" color="gray" aria-label="Skip forward 24h">
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            aria-label="Skip forward 24h"
+            onClick={() => nudge(24)}
+          >
             <SkipForward size={14} />
           </ActionIcon>
         </Group>

@@ -19,6 +19,7 @@ type CargoPrefix = { icao: string; name: string };
 
 export function AircraftLayer({ bbox }: { bbox: Bbox }) {
   const enabled = useLayerStore((s) => s.layers.aircraft.enabled);
+  const intensity = useLayerStore((s) => s.layers.aircraft.intensity);
   const { viewer } = useCesium();
   const { data: aircraft = [] } = useOpenSky(bbox, enabled);
   const syncAircraft = useLiveDataStore((s) => s.syncAircraft);
@@ -89,7 +90,7 @@ export function AircraftLayer({ bbox }: { bbox: Bbox }) {
         scale: isSelected ? 1.1 : isCargo ? 1.0 : 0.85,
         horizontalOrigin: HorizontalOrigin.CENTER,
         verticalOrigin: VerticalOrigin.CENTER,
-        color: Color.WHITE,
+        color: Color.WHITE.withAlpha(intensity),
         // Aircraft are airborne, so we only need a small near-camera buffer
         // against depth-glitches. Let the scene cull planes on the far side
         // of the globe instead of always rendering them on top.
@@ -103,7 +104,7 @@ export function AircraftLayer({ bbox }: { bbox: Bbox }) {
         entityMap.delete(id);
       }
     }
-  }, [viewer, aircraft, enabled, entityMap, cargoSet, selectedIcao]);
+  }, [viewer, aircraft, enabled, entityMap, cargoSet, selectedIcao, intensity]);
 
   return null;
 }

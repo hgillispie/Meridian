@@ -1,4 +1,4 @@
-import { Stack, Text, Group, Switch, Divider, ScrollArea } from '@mantine/core';
+import { Stack, Text, Group, Switch, Divider, ScrollArea, Slider } from '@mantine/core';
 import {
   Ship,
   Plane,
@@ -19,12 +19,20 @@ type LayerDef = {
   label: string;
   icon: LucideIcon;
   phase: number;
+  /** Layers whose intensity slider actually drives visible output today. */
+  liveIntensity?: boolean;
 };
 
 const LAYERS: LayerDef[] = [
-  { id: 'vessels', label: 'Vessels (AIS)', icon: Ship, phase: 2 },
-  { id: 'aircraft', label: 'Aircraft (ADS-B)', icon: Plane, phase: 2 },
-  { id: 'satellites', label: 'Earth-obs satellites', icon: Satellite, phase: 3 },
+  { id: 'vessels', label: 'Vessels (AIS)', icon: Ship, phase: 2, liveIntensity: true },
+  { id: 'aircraft', label: 'Aircraft (ADS-B)', icon: Plane, phase: 2, liveIntensity: true },
+  {
+    id: 'satellites',
+    label: 'Earth-obs satellites',
+    icon: Satellite,
+    phase: 3,
+    liveIntensity: true,
+  },
   { id: 'webcams', label: 'Port webcams', icon: Camera, phase: 6 },
   { id: 'gps', label: 'GPS integrity', icon: Radio, phase: 8 },
   { id: 'disruptions', label: 'Disruption zones', icon: AlertTriangle, phase: 5 },
@@ -37,6 +45,7 @@ const LAYERS: LayerDef[] = [
 export function LeftRail() {
   const layers = useLayerStore((s) => s.layers);
   const toggleLayer = useLayerStore((s) => s.toggle);
+  const setIntensity = useLayerStore((s) => s.setIntensity);
 
   return (
     <Stack gap={0} h="100%">
@@ -50,31 +59,61 @@ export function LeftRail() {
         <Stack gap={0} p="xs">
           {LAYERS.map((layer) => {
             const Icon = layer.icon;
-            const enabled = layers[layer.id]?.enabled ?? false;
+            const state = layers[layer.id];
+            const enabled = state?.enabled ?? false;
+            const intensity = state?.intensity ?? 1;
+            const isLive = layer.phase === 2 || layer.phase === 3;
+            const showSlider = enabled && layer.liveIntensity;
             return (
-              <Group
+              <Stack
                 key={layer.id}
-                justify="space-between"
-                wrap="nowrap"
+                gap={4}
                 px="xs"
                 py={6}
                 style={{
                   borderRadius: 2,
-                  opacity: layer.phase === 2 || layer.phase === 3 ? 1 : 0.55,
+                  opacity: isLive ? 1 : 0.55,
                 }}
               >
-                <Group gap={8} wrap="nowrap">
-                  <Icon size={14} />
-                  <Text size="xs">{layer.label}</Text>
+                <Group justify="space-between" wrap="nowrap">
+                  <Group gap={8} wrap="nowrap">
+                    <Icon size={14} />
+                    <Text size="xs">{layer.label}</Text>
+                  </Group>
+                  <Switch
+                    size="xs"
+                    color="meridian"
+                    checked={enabled}
+                    onChange={(e) => toggleLayer(layer.id, e.currentTarget.checked)}
+                    aria-label={`Toggle ${layer.label}`}
+                  />
                 </Group>
-                <Switch
-                  size="xs"
-                  color="meridian"
-                  checked={enabled}
-                  onChange={(e) => toggleLayer(layer.id, e.currentTarget.checked)}
-                  aria-label={`Toggle ${layer.label}`}
-                />
-              </Group>
+                {showSlider && (
+                  <Group gap={8} wrap="nowrap" pl={22}>
+                    <Slider
+                      size="xs"
+                      color="meridian"
+                      value={Math.round(intensity * 100)}
+                      onChange={(v) => setIntensity(layer.id, v / 100)}
+                      min={10}
+                      max={100}
+                      step={5}
+                      style={{ flex: 1 }}
+                      aria-label={`${layer.label} intensity`}
+                      label={(v) => `${v}%`}
+                    />
+                    <Text
+                      size="xs"
+                      c="dimmed"
+                      ff="monospace"
+                      data-mono
+                      style={{ width: 28, textAlign: 'right' }}
+                    >
+                      {Math.round(intensity * 100)}
+                    </Text>
+                  </Group>
+                )}
+              </Stack>
             );
           })}
         </Stack>

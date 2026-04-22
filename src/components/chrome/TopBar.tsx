@@ -2,12 +2,15 @@ import { Badge, Group, Kbd, Text, UnstyledButton, ActionIcon } from '@mantine/co
 import { spotlight } from '@mantine/spotlight';
 import { Search, Settings, CircleUserRound } from 'lucide-react';
 import { UtcClock } from './UtcClock';
+import { useClockStore } from '@/store/clock';
 
 /**
  * Top bar (§6.1): logo, global search trigger, UTC clock,
  * LIVE/REPLAY chip, settings, avatar.
  */
 export function TopBar() {
+  const position = useClockStore((s) => s.position);
+  const isReplay = position < -0.05; // ~3 minutes into the past
   return (
     <Group h="100%" px="md" justify="space-between" wrap="nowrap">
       <Group gap="sm" wrap="nowrap">
@@ -48,8 +51,13 @@ export function TopBar() {
 
       <Group gap="sm" wrap="nowrap">
         <UtcClock />
-        <Badge variant="light" color="meridian" size="sm">
-          LIVE
+        <Badge
+          variant="light"
+          color={isReplay ? 'yellow' : 'meridian'}
+          size="sm"
+          style={{ letterSpacing: '0.08em' }}
+        >
+          {isReplay ? `REPLAY ${Math.round(position)}h` : 'LIVE'}
         </Badge>
         <ActionIcon variant="subtle" color="gray" aria-label="Settings">
           <Settings size={16} />

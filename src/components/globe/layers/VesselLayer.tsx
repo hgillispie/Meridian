@@ -22,6 +22,7 @@ import { vesselMarker } from '@/lib/globe/markers';
 
 export function VesselLayer({ bbox }: { bbox: Bbox }) {
   const enabled = useLayerStore((s) => s.layers.vessels.enabled);
+  const intensity = useLayerStore((s) => s.layers.vessels.intensity);
   const { viewer } = useCesium();
   const { vessels, tick } = useAisStream(bbox, enabled);
   const upsertVessels = useLiveDataStore((s) => s.upsertVessels);
@@ -74,7 +75,7 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
         horizontalOrigin: HorizontalOrigin.CENTER,
         verticalOrigin: VerticalOrigin.CENTER,
         heightReference: HeightReference.CLAMP_TO_GROUND,
-        color: Color.WHITE,
+        color: Color.WHITE.withAlpha(intensity),
         // Only disable depth test when camera is within 50 km so the billboard
         // isn't occluded by nearby terrain. Beyond that distance we let the
         // scene cull billboards on the far side of the globe — otherwise they
@@ -95,7 +96,7 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
     }
     // vessels is a stable ref — use `tick` to re-run on every batched update.
     // `selectedMmsi` re-runs so the halo swaps in immediately on selection.
-  }, [viewer, tick, vessels, enabled, entityMap, selectedMmsi]);
+  }, [viewer, tick, vessels, enabled, entityMap, selectedMmsi, intensity]);
 
   return null;
 }

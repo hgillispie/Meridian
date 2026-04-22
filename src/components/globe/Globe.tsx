@@ -12,6 +12,9 @@ import { loadWorldTileset, installAltitudeGate } from '@/lib/globe/tilesets';
 import { VesselLayer, AircraftLayer, SatelliteLayer } from './layers';
 import { useViewportBbox } from '@/hooks/useViewportBbox';
 import { useSelectionStore, type SelectionKind } from '@/store/selection';
+import { useClockBridge } from '@/hooks/useClockBridge';
+import { setCameraApiViewer } from '@/lib/globe/cameraApi';
+import { useShareableUrl } from '@/hooks/useShareableUrl';
 
 /**
  * Phase 1 globe — Resium `<Viewer>` with all stock UI widgets disabled
@@ -29,6 +32,8 @@ export function Globe() {
   const viewerRef = useRef<{ cesiumElement?: CesiumViewer }>(null);
   const [viewer, setViewer] = useState<CesiumViewer | null>(null);
   const bbox = useViewportBbox(viewer);
+  useClockBridge(viewer);
+  useShareableUrl(viewer);
 
   // Resium populates `cesiumElement` on the ref asynchronously, so a one-shot
   // useEffect with `[]` deps can miss it. Poll with rAF until it shows up.
@@ -38,6 +43,7 @@ export function Globe() {
       const v = viewerRef.current?.cesiumElement;
       if (v) {
         setViewer(v);
+        setCameraApiViewer(v);
         // Dev-only diagnostic hook so the Claude Preview agent can inspect
         // entities / camera state from the console.
         if (import.meta.env.DEV) {
@@ -50,6 +56,7 @@ export function Globe() {
     tick();
     return () => {
       if (rafId) window.cancelAnimationFrame(rafId);
+      setCameraApiViewer(null);
     };
   }, []);
 

@@ -5,7 +5,7 @@ import { Spotlight } from '@mantine/spotlight';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { theme } from './theme';
 import { AppChrome } from './components/chrome/AppChrome';
-import { getSpotlightActions } from './components/search/spotlightActions';
+import { useSpotlightActions } from './components/search/useSpotlightActions';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,19 +22,34 @@ export function App() {
       <QueryClientProvider client={queryClient}>
         <ModalsProvider>
           <Notifications position="top-right" limit={5} />
-          <Spotlight
-            actions={getSpotlightActions()}
-            shortcut={['mod + K', 'mod + P']}
-            nothingFound="Nothing here yet — vessels, ports, satellites, and cities coming in Phase 4."
-            highlightQuery
-            searchProps={{
-              leftSection: null,
-              placeholder: 'Search ports, vessels, flights, satellites…',
-            }}
-          />
-          <AppChrome />
+          <AppShell />
         </ModalsProvider>
       </QueryClientProvider>
     </MantineProvider>
+  );
+}
+
+/**
+ * Inner shell — lives inside QueryClientProvider so the spotlight
+ * actions hook can subscribe to query / zustand state without an
+ * extra wrapper.
+ */
+function AppShell() {
+  const actions = useSpotlightActions();
+  return (
+    <>
+      <Spotlight
+        actions={actions}
+        shortcut={['mod + K', 'mod + P']}
+        nothingFound="Nothing matches. Try @port, @ship, @plane, @sat, or @city."
+        highlightQuery
+        limit={12}
+        searchProps={{
+          leftSection: null,
+          placeholder: 'Search ports, vessels, flights, satellites…',
+        }}
+      />
+      <AppChrome />
+    </>
   );
 }

@@ -83,7 +83,7 @@ export function OverviewCard() {
             System
           </Text>
           <Text size="xs" c="meridian">
-            Phase 0 · live
+            Phase 4 · live
           </Text>
         </Group>
         <Group justify="space-between">
@@ -91,14 +91,14 @@ export function OverviewCard() {
             <RingProgress
               size={40}
               thickness={4}
-              sections={[{ value: 40, color: 'meridian' }]}
+              sections={[{ value: 50, color: 'meridian' }]}
             />
             <Stack gap={0}>
               <Text size="xs" fw={500}>
                 Build progress
               </Text>
               <Text size="xs" c="dimmed">
-                4 / 10 phases
+                5 / 10 phases
               </Text>
             </Stack>
           </Group>
