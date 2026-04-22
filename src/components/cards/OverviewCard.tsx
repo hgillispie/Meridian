@@ -1,6 +1,10 @@
-import { Stack, Text, Group, Paper, RingProgress, Box } from '@mantine/core';
+import { Stack, Text, Group, Paper, RingProgress, Box, UnstyledButton } from '@mantine/core';
 import { useLiveDataStore } from '@/store/liveData';
 import { useSatelliteStore } from '@/store/satellites';
+import { useChokepointStore, type ChokepointId } from '@/store/chokepoints';
+import { useEventsStore } from '@/store/events';
+import { useSelectionStore } from '@/store/selection';
+import { flyTo } from '@/lib/globe/cameraApi';
 
 /**
  * Default right-rail card when nothing is selected (§6.1).
@@ -11,6 +15,21 @@ export function OverviewCard() {
   const vesselCount = useLiveDataStore((s) => Object.keys(s.vessels).length);
   const aircraftCount = useLiveDataStore((s) => Object.keys(s.aircraft).length);
   const satelliteCount = useSatelliteStore((s) => Object.keys(s.byId).length);
+  const eventCount = useEventsStore((s) => s.events.length);
+  const chokepointFeatures = useChokepointStore((s) => s.features);
+  const chokepointMetrics = useChokepointStore((s) => s.metrics);
+  const chokepointBaselines = useChokepointStore((s) => s.baselines);
+  const select = useSelectionStore((s) => s.select);
+
+  // Show the four hero chokepoints in the overview strip; full list is
+  // accessible via spotlight (@choke).
+  const HERO_IDS: ChokepointId[] = ['suez', 'panama', 'hormuz', 'malacca'];
+  const heroes = HERO_IDS.map((id) => {
+    const f = chokepointFeatures.find((x) => x.id === id);
+    const m = chokepointMetrics[id];
+    const b = chokepointBaselines[id];
+    return { id, feature: f, metric: m, baseline: b };
+  });
 
   return (
     <Stack gap="md">
@@ -29,7 +48,7 @@ export function OverviewCard() {
       </Group>
       <Group grow gap="xs">
         <Stat label="Satellites" value={formatCount(satelliteCount)} phase="Phase 3" />
-        <Stat label="Events" value="—" phase="Phase 5" />
+        <Stat label="Events" value={eventCount === 0 ? '—' : String(eventCount)} phase="Phase 5" />
       </Group>
 
       <Paper p="sm" withBorder>
@@ -37,43 +56,64 @@ export function OverviewCard() {
           <Text size="xs" fw={600}>
             Chokepoints
           </Text>
-          <Text size="xs" c="dimmed">
-            Phase 5
+          <Text size="xs" c="meridian">
+            Phase 5 · live
           </Text>
         </Group>
         <Stack gap={4}>
-          {[
-            ['Suez', 0],
-            ['Panama', 0],
-            ['Hormuz', 0],
-            ['Malacca', 0],
-          ].map(([name, pct]) => (
-            <Group key={name as string} justify="space-between" gap="xs">
-              <Text size="xs" c="dimmed">
-                {name}
-              </Text>
-              <Group gap={4}>
-                <Box
-                  w={60}
-                  h={4}
-                  style={{
-                    background: 'var(--meridian-border)',
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Box
-                    h="100%"
-                    w={`${pct}%`}
-                    style={{ background: 'var(--meridian-accent)' }}
-                  />
-                </Box>
-                <Text size="xs" c="dimmed" ff="monospace" data-mono>
-                  —
-                </Text>
-              </Group>
-            </Group>
-          ))}
+          {heroes.map(({ id, feature, metric, baseline }) => {
+            const inside = metric?.vesselsInside ?? 0;
+            const queue = metric?.queueLength ?? 0;
+            const typical = baseline?.typicalQueue ?? 10;
+            const pct =
+              inside > 0
+                ? Math.min(100, Math.round((inside / Math.max(typical * 5, 10)) * 100))
+                : 0;
+            const color =
+              queue > typical * 2
+                ? '#F59E0B'
+                : queue > typical
+                  ? '#FACC15'
+                  : 'var(--meridian-accent)';
+            return (
+              <UnstyledButton
+                key={id}
+                onClick={() => {
+                  if (feature) {
+                    select({ kind: 'chokepoint', id });
+                    flyTo(feature.center[0], feature.center[1], 1_500_000);
+                  }
+                }}
+                style={{ display: 'block' }}
+              >
+                <Group justify="space-between" gap="xs">
+                  <Text size="xs" c="dimmed">
+                    {feature?.name ?? id}
+                  </Text>
+                  <Group gap={4}>
+                    <Box
+                      w={60}
+                      h={4}
+                      style={{
+                        background: 'var(--meridian-border)',
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <Box
+                        h="100%"
+                        w={`${pct}%`}
+                        style={{ background: color }}
+                      />
+                    </Box>
+                    <Text size="xs" c="dimmed" ff="monospace" data-mono>
+                      {inside > 0 ? String(inside) : '—'}
+                    </Text>
+                  </Group>
+                </Group>
+              </UnstyledButton>
+            );
+          })}
         </Stack>
       </Paper>
 
@@ -83,7 +123,7 @@ export function OverviewCard() {
             System
           </Text>
           <Text size="xs" c="meridian">
-            Phase 4 · live
+            Phase 5 · live
           </Text>
         </Group>
         <Group justify="space-between">
@@ -91,14 +131,14 @@ export function OverviewCard() {
             <RingProgress
               size={40}
               thickness={4}
-              sections={[{ value: 50, color: 'meridian' }]}
+              sections={[{ value: 60, color: 'meridian' }]}
             />
             <Stack gap={0}>
               <Text size="xs" fw={500}>
                 Build progress
               </Text>
               <Text size="xs" c="dimmed">
-                5 / 10 phases
+                6 / 10 phases
               </Text>
             </Stack>
           </Group>

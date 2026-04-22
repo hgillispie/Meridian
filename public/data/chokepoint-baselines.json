@@ -1,0 +1,53 @@
+{
+  "_comment": "30-day medians sourced from published 2023–2024 transit data (Suez Canal Authority, Panama Canal Authority, EIA, Lloyd's List). Used as 'expected' baseline — live metrics are expressed as a delta vs this number.",
+  "baselines": {
+    "suez": {
+      "transitsPerDay": 50,
+      "avgDwellHours": 11,
+      "typicalQueue": 5,
+      "notes": "Daily convoy-system crossing. Baseline from 2023 SCA figures (~18k/yr)."
+    },
+    "panama": {
+      "transitsPerDay": 36,
+      "avgDwellHours": 10,
+      "typicalQueue": 8,
+      "notes": "Lock-throughput limited. 2023 drought compressed daily slots from 38 → 24; this baseline is pre-drought median."
+    },
+    "hormuz": {
+      "transitsPerDay": 76,
+      "avgDwellHours": 4,
+      "typicalQueue": 2,
+      "notes": "~20M bpd of oil; open seaway so dwell is short."
+    },
+    "malacca": {
+      "transitsPerDay": 215,
+      "avgDwellHours": 20,
+      "typicalQueue": 12,
+      "notes": "~90k/yr including feeders; long strait so dwell is ~20h end-to-end."
+    },
+    "bosphorus": {
+      "transitsPerDay": 125,
+      "avgDwellHours": 3,
+      "typicalQueue": 15,
+      "notes": "TSS-controlled with weather/current delays; queue often significant."
+    },
+    "bab-el-mandeb": {
+      "transitsPerDay": 62,
+      "avgDwellHours": 6,
+      "typicalQueue": 3,
+      "notes": "Yemen Red Sea risk since 2023 has depressed this vs. historical ~85/day."
+    },
+    "dover": {
+      "transitsPerDay": 410,
+      "avgDwellHours": 2,
+      "typicalQueue": 0,
+      "notes": "TSS-controlled; includes cross-channel ferries + commercial shipping."
+    },
+    "cape-of-good-hope": {
+      "transitsPerDay": 130,
+      "avgDwellHours": 18,
+      "typicalQueue": 0,
+      "notes": "Reroute spike during Red Sea disruption — was ~90/day pre-2024."
+    }
+  }
+}

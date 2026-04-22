@@ -3,6 +3,7 @@ import type { SpotlightActionData, SpotlightActionGroupData } from '@mantine/spo
 import { useLiveDataStore } from '@/store/liveData';
 import { useSatelliteStore } from '@/store/satellites';
 import { useSelectionStore } from '@/store/selection';
+import { useChokepointStore } from '@/store/chokepoints';
 import { flyTo } from '@/lib/globe/cameraApi';
 
 type Port = {
@@ -48,6 +49,7 @@ const SNAPSHOT_MS = 1500;
  */
 export function useSpotlightActions(): (SpotlightActionData | SpotlightActionGroupData)[] {
   const select = useSelectionStore((s) => s.select);
+  const chokepoints = useChokepointStore((s) => s.features);
 
   const [ports, setPorts] = useState<Port[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -172,15 +174,32 @@ export function useSpotlightActions(): (SpotlightActionData | SpotlightActionGro
       },
     }));
 
+    const chokepointActions: SpotlightActionData[] = chokepoints.map((c) => ({
+      id: `chokepoint:${c.id}`,
+      label: c.name,
+      description: `Chokepoint · ${c.region}`,
+      keywords: [
+        '@choke',
+        '@chokepoint',
+        c.id,
+        c.region.toLowerCase(),
+      ],
+      onClick: () => {
+        select({ kind: 'chokepoint', id: c.id });
+        flyTo(c.center[0], c.center[1], 1_500_000);
+      },
+    }));
+
     // Grouped output — Mantine renders a label for each group. Order
     // by cardinality so static, curated entries come first (less noise
     // in the default empty-query state).
     return [
+      { group: 'Chokepoints', actions: chokepointActions },
       { group: 'Ports', actions: portActions },
       { group: 'Cities', actions: cityActions },
       { group: 'Vessels', actions: vesselActions },
       { group: 'Aircraft', actions: aircraftActions },
       { group: 'Satellites', actions: satActions },
     ];
-  }, [ports, cities, snapshot, select]);
+  }, [ports, cities, snapshot, chokepoints, select]);
 }

@@ -9,7 +9,13 @@ import {
   type Viewer as CesiumViewer,
 } from 'cesium';
 import { loadWorldTileset, installAltitudeGate } from '@/lib/globe/tilesets';
-import { VesselLayer, AircraftLayer, SatelliteLayer } from './layers';
+import {
+  VesselLayer,
+  AircraftLayer,
+  SatelliteLayer,
+  ChokepointsLayer,
+  DisruptionZonesLayer,
+} from './layers';
 import { useViewportBbox } from '@/hooks/useViewportBbox';
 import { useSelectionStore, type SelectionKind } from '@/store/selection';
 import { useClockBridge } from '@/hooks/useClockBridge';
@@ -162,6 +168,8 @@ export function Globe() {
       />
       {viewer && (
         <>
+          <DisruptionZonesLayer />
+          <ChokepointsLayer />
           <VesselLayer bbox={bbox} />
           <AircraftLayer bbox={bbox} />
           <SatelliteLayer />

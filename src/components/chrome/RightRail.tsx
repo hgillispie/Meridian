@@ -7,6 +7,8 @@ import { PlaceholderCard } from '../cards/PlaceholderCard';
 import { VesselCard } from '../cards/VesselCard';
 import { AircraftCard } from '../cards/AircraftCard';
 import { SatelliteCard } from '../cards/SatelliteCard';
+import { ChokepointCard } from '../cards/ChokepointCard';
+import type { ChokepointId } from '@/store/chokepoints';
 
 export function RightRail() {
   const selection = useSelectionStore((s) => s.selection);
@@ -43,10 +45,14 @@ export function RightRail() {
           {selection?.kind === 'satellite' && (
             <SatelliteCard satellite={satellitesById[Number(selection.id)]} />
           )}
+          {selection?.kind === 'chokepoint' && (
+            <ChokepointCard id={selection.id as ChokepointId} />
+          )}
           {selection &&
             selection.kind !== 'vessel' &&
             selection.kind !== 'aircraft' &&
-            selection.kind !== 'satellite' && <PlaceholderCard kind={selection.kind} />}
+            selection.kind !== 'satellite' &&
+            selection.kind !== 'chokepoint' && <PlaceholderCard kind={selection.kind} />}
         </Stack>
       </ScrollArea>
     </Stack>

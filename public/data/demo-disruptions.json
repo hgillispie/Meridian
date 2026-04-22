@@ -1,0 +1,70 @@
+{
+  "_comment": "Curated demo disruptions — render as pulsing translucent polygons + rows in EventFeed. Real-world sources (NOAA, Open-Meteo, IMB) feed in alongside these. Keep count low so the map doesn't turn into a heatmap of red.",
+  "disruptions": [
+    {
+      "id": "demo-rotterdam-storm",
+      "kind": "weather",
+      "severity": "moderate",
+      "title": "North Sea storm — Rotterdam approaches",
+      "detail": "40 kn sustained winds; port authority advising reduced pilotage. 6 vessels holding at anchor.",
+      "startedAt": "2026-04-22T06:00:00Z",
+      "endedAt": "2026-04-23T18:00:00Z",
+      "polygon": [
+        [3.6, 51.7],
+        [4.6, 51.7],
+        [4.6, 52.4],
+        [3.6, 52.4],
+        [3.6, 51.7]
+      ],
+      "center": [4.1, 52.0]
+    },
+    {
+      "id": "demo-red-sea-risk",
+      "kind": "piracy",
+      "severity": "high",
+      "title": "Red Sea elevated risk zone",
+      "detail": "Ongoing Houthi attacks on commercial shipping. Major carriers rerouting via Cape of Good Hope.",
+      "startedAt": "2026-04-15T00:00:00Z",
+      "polygon": [
+        [41.5, 12.0],
+        [45.0, 12.0],
+        [45.0, 16.0],
+        [41.5, 16.0],
+        [41.5, 12.0]
+      ],
+      "center": [43.3, 14.0]
+    },
+    {
+      "id": "demo-panama-drought",
+      "kind": "port-status",
+      "severity": "moderate",
+      "title": "Panama Canal — reduced slots",
+      "detail": "Gatun Lake water levels 1.8 m below median. Canal Authority restricting Neopanamax transits to 27/day.",
+      "startedAt": "2026-04-01T00:00:00Z",
+      "polygon": [
+        [-80.2, 8.85],
+        [-79.5, 8.85],
+        [-79.5, 9.4],
+        [-80.2, 9.4],
+        [-80.2, 8.85]
+      ],
+      "center": [-79.9, 9.1]
+    },
+    {
+      "id": "demo-malacca-advisory",
+      "kind": "regulatory",
+      "severity": "low",
+      "title": "Singapore Strait — enhanced transit advisory",
+      "detail": "Recent armed-robbery incidents near Philip Channel. MPA recommending convoy transits between 0200–0500 local.",
+      "startedAt": "2026-04-18T00:00:00Z",
+      "polygon": [
+        [103.3, 1.1],
+        [104.3, 1.1],
+        [104.3, 1.4],
+        [103.3, 1.4],
+        [103.3, 1.1]
+      ],
+      "center": [103.8, 1.25]
+    }
+  ]
+}

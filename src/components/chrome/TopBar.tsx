@@ -2,6 +2,7 @@ import { Badge, Group, Kbd, Text, UnstyledButton, ActionIcon } from '@mantine/co
 import { spotlight } from '@mantine/spotlight';
 import { Search, Settings, CircleUserRound } from 'lucide-react';
 import { UtcClock } from './UtcClock';
+import { EventFeedTrigger } from './EventFeed';
 import { useClockStore } from '@/store/clock';
 
 /**
@@ -50,6 +51,7 @@ export function TopBar() {
       </UnstyledButton>
 
       <Group gap="sm" wrap="nowrap">
+        <EventFeedTrigger />
         <UtcClock />
         <Badge
           variant="light"

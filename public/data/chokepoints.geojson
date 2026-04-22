@@ -1,0 +1,181 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "suez",
+        "name": "Suez Canal",
+        "region": "Egypt",
+        "center": [32.35, 30.7],
+        "description": "193 km sea-level canal connecting the Mediterranean to the Red Sea. Carries ~12% of global trade by volume."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [32.28, 29.9],
+            [32.45, 29.9],
+            [32.45, 31.3],
+            [32.28, 31.3],
+            [32.28, 29.9]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "panama",
+        "name": "Panama Canal",
+        "region": "Panama",
+        "center": [-79.9, 9.1],
+        "description": "82 km lock-and-lake canal linking the Atlantic and Pacific. Neopanamax locks handle ~14k transits/year."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-80.2, 8.85],
+            [-79.5, 8.85],
+            [-79.5, 9.4],
+            [-80.2, 9.4],
+            [-80.2, 8.85]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "hormuz",
+        "name": "Strait of Hormuz",
+        "region": "Persian Gulf",
+        "center": [56.5, 26.6],
+        "description": "~33 km wide chokepoint between the Persian Gulf and the Gulf of Oman. ~20% of global petroleum trade transits daily."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [55.8, 25.9],
+            [57.2, 25.9],
+            [57.2, 27.2],
+            [55.8, 27.2],
+            [55.8, 25.9]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "malacca",
+        "name": "Strait of Malacca",
+        "region": "Southeast Asia",
+        "center": [100.4, 2.8],
+        "description": "900 km strait between the Malay Peninsula and Sumatra. Second-busiest chokepoint globally after the English Channel."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [99.5, 1.2],
+            [103.8, 1.2],
+            [103.8, 5.6],
+            [99.5, 5.6],
+            [99.5, 1.2]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bosphorus",
+        "name": "Bosphorus Strait",
+        "region": "Turkey",
+        "center": [28.98, 41.08],
+        "description": "31 km strait dividing Istanbul and connecting the Black Sea to the Mediterranean via the Sea of Marmara."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [28.9, 40.9],
+            [29.15, 40.9],
+            [29.15, 41.3],
+            [28.9, 41.3],
+            [28.9, 40.9]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "bab-el-mandeb",
+        "name": "Bab el-Mandeb",
+        "region": "Red Sea",
+        "center": [43.3, 12.6],
+        "description": "29 km strait between Yemen and Djibouti. Southern entrance to the Red Sea–Suez corridor."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [42.8, 12.0],
+            [43.8, 12.0],
+            [43.8, 13.3],
+            [42.8, 13.3],
+            [42.8, 12.0]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "dover",
+        "name": "Dover Strait",
+        "region": "English Channel",
+        "center": [1.4, 51.0],
+        "description": "34 km strait between England and France. Busiest shipping lane on Earth by vessel count."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [1.1, 50.7],
+            [1.8, 50.7],
+            [1.8, 51.3],
+            [1.1, 51.3],
+            [1.1, 50.7]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cape-of-good-hope",
+        "name": "Cape of Good Hope",
+        "region": "South Africa",
+        "center": [18.5, -34.5],
+        "description": "Primary reroute path when Suez / Bab el-Mandeb are impassable. Adds ~10 days to Asia–Europe voyages."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [17.8, -35.2],
+            [19.5, -35.2],
+            [19.5, -33.8],
+            [17.8, -33.8],
+            [17.8, -35.2]
+          ]
+        ]
+      }
+    }
+  ]
+}

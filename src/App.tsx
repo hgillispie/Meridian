@@ -41,7 +41,7 @@ function AppShell() {
       <Spotlight
         actions={actions}
         shortcut={['mod + K', 'mod + P']}
-        nothingFound="Nothing matches. Try @port, @ship, @plane, @sat, or @city."
+        nothingFound="Nothing matches. Try @port, @ship, @plane, @sat, @city, or @choke."
         highlightQuery
         limit={12}
         searchProps={{
