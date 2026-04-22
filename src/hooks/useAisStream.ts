@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Vessel } from '@/types/vessel';
 import { createAisStreamClient, type AisStreamClient } from '@/lib/api/aisstream';
-import type { Bbox } from '@/lib/geo/bbox';
+import { bboxContains, type Bbox } from '@/lib/geo/bbox';
 
 type AisStatus = 'connecting' | 'open' | 'closed' | 'error' | 'disabled';
 
@@ -58,10 +58,23 @@ export function useAisStream(bbox: Bbox, enabled: boolean): UseAisStreamResult {
 
   // Push the bbox whenever it changes. We depend on the scalar coords rather
   // than the bbox object itself so a new-reference-same-coords does not
-  // trigger a re-subscribe.
+  // trigger a re-subscribe. On every bbox change we also purge any vessel
+  // whose last position has drifted outside the new viewport — otherwise
+  // stale ships from prior pans accumulate forever and appear "left behind"
+  // (e.g. Singapore vessels still sitting in the Pacific after panning to
+  // the Atlantic).
   useEffect(() => {
     if (!enabled) return;
     clientRef.current?.subscribe(bbox);
+    let removed = 0;
+    for (const [mmsi, v] of vesselsRef.current) {
+      if (v.lat == null || v.lon == null) continue;
+      if (!bboxContains(bbox, v.lon, v.lat)) {
+        vesselsRef.current.delete(mmsi);
+        removed++;
+      }
+    }
+    if (removed > 0) setTick((n) => (n + 1) % 1_000_000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bbox.west, bbox.south, bbox.east, bbox.north, enabled]);
 

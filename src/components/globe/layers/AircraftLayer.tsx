@@ -97,7 +97,10 @@ export function AircraftLayer({ bbox }: { bbox: Bbox }) {
         horizontalOrigin: HorizontalOrigin.CENTER,
         verticalOrigin: VerticalOrigin.CENTER,
         color: Color.WHITE,
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        // Aircraft are airborne, so we only need a small near-camera buffer
+        // against depth-glitches. Let the scene cull planes on the far side
+        // of the globe instead of always rendering them on top.
+        disableDepthTestDistance: 50_000,
       } as unknown as typeof entity.billboard;
     }
 

@@ -82,7 +82,11 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
         verticalOrigin: VerticalOrigin.CENTER,
         heightReference: HeightReference.CLAMP_TO_GROUND,
         color: Color.WHITE,
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        // Only disable depth test when camera is within 50 km so the billboard
+        // isn't occluded by nearby terrain. Beyond that distance we let the
+        // scene cull billboards on the far side of the globe — otherwise they
+        // render through the earth and look detached from world position.
+        disableDepthTestDistance: 50_000,
       } as unknown as typeof entity.billboard;
     }
 
