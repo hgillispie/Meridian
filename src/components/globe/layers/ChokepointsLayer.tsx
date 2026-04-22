@@ -97,7 +97,12 @@ export function ChokepointsLayer() {
         showBackground: true,
         backgroundColor: Color.fromCssColorString('#0B0F14').withAlpha(0.55),
         backgroundPadding: new Cartesian2(6, 3),
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        // Punch through terrain for labels within 5,000 km of camera
+        // (so mountains don't clip them at oblique angles) but let the
+        // globe itself occlude far-hemisphere labels. Without this cap
+        // you'd see every chokepoint label regardless of which side of
+        // the planet you're looking at.
+        disableDepthTestDistance: 5_000_000,
       } as unknown as typeof entity.label;
     }
   }, [viewer, enabled, features, metrics, baselines, selectedId, intensity, entityMap]);

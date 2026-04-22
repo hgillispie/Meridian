@@ -70,12 +70,18 @@ export function Globe() {
   useEffect(() => {
     if (!viewer) return;
 
-    // Command-center camera: no underground rotation, sensible tilt clamp,
-    // faster default zoom, no inertia spin drift.
+    // Command-center camera: free-flying zoom (no collision-detection
+    // stall against OSM buildings or 3D Tiles), sensible zoom clamps.
+    // NOTE: enableCollisionDetection=true was making scroll-zoom feel
+    // dead over city tiles — the controller refuses to move the camera
+    // through tile geometry, so wheel events got swallowed silently.
     const controller = viewer.scene.screenSpaceCameraController;
-    controller.enableCollisionDetection = true;
-    controller.minimumZoomDistance = 10;
-    controller.maximumZoomDistance = 30_000_000;
+    controller.enableCollisionDetection = false;
+    controller.minimumZoomDistance = 100;
+    controller.maximumZoomDistance = 40_000_000;
+    // Default inertia is 0.9; 0.8 feels snappier for presentation-style
+    // zooming without losing the smooth-stop feel.
+    controller.inertiaZoom = 0.8;
     viewer.scene.globe.enableLighting = true;
     viewer.scene.fog.enabled = true;
     if (viewer.scene.skyAtmosphere) {

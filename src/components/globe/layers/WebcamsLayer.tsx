@@ -87,7 +87,10 @@ export function WebcamsLayer() {
           0,
           12_000_000
         ),
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        // Finite (not POSITIVE_INFINITY): pins within 5,000 km of
+        // camera pop above terrain (so buildings don't clip them), but
+        // far-hemisphere pins are correctly occluded by the Earth.
+        disableDepthTestDistance: 5_000_000,
       } as unknown as typeof entity.billboard;
 
       entity.label = {
@@ -105,7 +108,7 @@ export function WebcamsLayer() {
           0,
           2_000_000
         ),
-        disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        disableDepthTestDistance: 5_000_000,
         showBackground: true,
         backgroundColor: Color.fromCssColorString('#0B0F14').withAlpha(0.65),
         backgroundPadding: new Cartesian2(5, 3),
