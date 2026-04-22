@@ -4,6 +4,7 @@ import { LeftRail } from './LeftRail';
 import { RightRail } from './RightRail';
 import { BottomDock } from './BottomDock';
 import { GlobeStage } from '../globe/GlobeStage';
+import { WebcamPiP } from '../webcams/WebcamPiP';
 
 /**
  * Meridian's single-screen IA (§6). Four fixed regions around a
@@ -39,6 +40,10 @@ export function AppChrome() {
       <AppShell.Main>
         <GlobeStage />
       </AppShell.Main>
+
+      {/* PiP is a fixed-position overlay — lives outside AppShell
+          slots so it can float above the globe without being clipped. */}
+      <WebcamPiP />
     </AppShell>
   );
 }

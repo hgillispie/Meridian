@@ -131,14 +131,14 @@ export function OverviewCard() {
             <RingProgress
               size={40}
               thickness={4}
-              sections={[{ value: 60, color: 'meridian' }]}
+              sections={[{ value: 70, color: 'meridian' }]}
             />
             <Stack gap={0}>
               <Text size="xs" fw={500}>
                 Build progress
               </Text>
               <Text size="xs" c="dimmed">
-                6 / 10 phases
+                7 / 10 phases
               </Text>
             </Stack>
           </Group>

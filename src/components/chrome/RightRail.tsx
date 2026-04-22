@@ -8,6 +8,7 @@ import { VesselCard } from '../cards/VesselCard';
 import { AircraftCard } from '../cards/AircraftCard';
 import { SatelliteCard } from '../cards/SatelliteCard';
 import { ChokepointCard } from '../cards/ChokepointCard';
+import { PortCard } from '../cards/PortCard';
 import type { ChokepointId } from '@/store/chokepoints';
 
 export function RightRail() {
@@ -48,11 +49,13 @@ export function RightRail() {
           {selection?.kind === 'chokepoint' && (
             <ChokepointCard id={selection.id as ChokepointId} />
           )}
+          {selection?.kind === 'port' && <PortCard portCode={selection.id} />}
           {selection &&
             selection.kind !== 'vessel' &&
             selection.kind !== 'aircraft' &&
             selection.kind !== 'satellite' &&
-            selection.kind !== 'chokepoint' && <PlaceholderCard kind={selection.kind} />}
+            selection.kind !== 'chokepoint' &&
+            selection.kind !== 'port' && <PlaceholderCard kind={selection.kind} />}
         </Stack>
       </ScrollArea>
     </Stack>

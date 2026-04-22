@@ -15,6 +15,7 @@ import {
   SatelliteLayer,
   ChokepointsLayer,
   DisruptionZonesLayer,
+  WebcamsLayer,
 } from './layers';
 import { useViewportBbox } from '@/hooks/useViewportBbox';
 import { useSelectionStore, type SelectionKind } from '@/store/selection';
@@ -170,6 +171,7 @@ export function Globe() {
         <>
           <DisruptionZonesLayer />
           <ChokepointsLayer />
+          <WebcamsLayer />
           <VesselLayer bbox={bbox} />
           <AircraftLayer bbox={bbox} />
           <SatelliteLayer />

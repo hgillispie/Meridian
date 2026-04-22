@@ -33,7 +33,7 @@ const LAYERS: LayerDef[] = [
     phase: 3,
     liveIntensity: true,
   },
-  { id: 'webcams', label: 'Port webcams', icon: Camera, phase: 6 },
+  { id: 'webcams', label: 'Port webcams', icon: Camera, phase: 6, liveIntensity: true },
   { id: 'gps', label: 'GPS integrity', icon: Radio, phase: 8 },
   { id: 'disruptions', label: 'Disruption zones', icon: AlertTriangle, phase: 5 },
   { id: 'lanes', label: 'Shipping lanes', icon: Route, phase: 5 },
@@ -62,7 +62,11 @@ export function LeftRail() {
             const state = layers[layer.id];
             const enabled = state?.enabled ?? false;
             const intensity = state?.intensity ?? 1;
-            const isLive = layer.phase === 2 || layer.phase === 3;
+            const isLive =
+              layer.phase === 2 ||
+              layer.phase === 3 ||
+              layer.phase === 5 ||
+              layer.phase === 6;
             const showSlider = enabled && layer.liveIntensity;
             return (
               <Stack
