@@ -5,6 +5,53 @@ import {
 } from 'cesium';
 
 /**
+ * Altitude (m) above which Google 3D Tiles are hidden entirely. At wide
+ * zoom the Bing imagery + Cesium terrain are indistinguishable from the
+ * photorealistic tileset, so we gate the expensive request stream by
+ * camera altitude. Threshold picked to match a regional view (~Southeast
+ * Asia filling the screen).
+ */
+export const TILESET_HIDE_ALTITUDE_M = 1_500_000;
+
+/**
+ * Cesium SSE target. Higher = coarser tiles = fewer requests. Cesium's
+ * default is 16, which is gorgeous but floods the API. 28 still reads as
+ * photorealistic at presenter distances and cuts tile volume ~2-3x.
+ */
+const SCREEN_SPACE_ERROR = 28;
+
+/**
+ * GPU cache budget in bytes. Tiles beyond this get evicted LRU-style.
+ * 512 MB is aggressive but safe on laptops with discrete GPUs; drop to
+ * 256 MB if you start seeing allocation failures in the console.
+ */
+const CACHE_BYTES = 512 * 1024 * 1024;
+
+/**
+ * Apply Meridian's perf-focused tileset tuning. Called for every resolution
+ * branch below so Google / Ion / fallback all share the same cache + SSE.
+ */
+function tuneTileset(tileset: Cesium3DTileset): void {
+  tileset.maximumScreenSpaceError = SCREEN_SPACE_ERROR;
+  // `cacheBytes` + `maximumCacheOverflowBytes` replace the deprecated
+  // `maximumMemoryUsage`. Overflow is allowed during camera motion; the
+  // cache trims back down once the camera settles.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (tileset as unknown as { cacheBytes?: number }).cacheBytes = CACHE_BYTES;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (tileset as unknown as { maximumCacheOverflowBytes?: number }).maximumCacheOverflowBytes =
+    CACHE_BYTES / 2;
+  // Warm the cache for a camera fly destination so we don't shotgun the
+  // tile server on landing.
+  tileset.preloadFlightDestinations = true;
+  // Never fetch tiles for the far side of the globe we're not looking at.
+  tileset.preloadWhenHidden = false;
+  // Never retain tiles we can no longer see.
+  tileset.cullRequestsWhileMoving = true;
+  tileset.cullRequestsWhileMovingMultiplier = 10;
+}
+
+/**
  * Load the best-available world tileset onto the Cesium viewer.
  *
  * Resolution order:
@@ -41,6 +88,7 @@ export async function loadWorldTileset(viewer: Viewer): Promise<Cesium3DTileset 
       const tileset = await Cesium3DTileset.fromUrl(resource, {
         showCreditsOnScreen: true,
       });
+      tuneTileset(tileset);
       viewer.scene.primitives.add(tileset);
       return tileset;
     } catch (err) {
@@ -67,6 +115,7 @@ async function tryLoad(
     const tileset = await Cesium3DTileset.fromUrl(url, {
       showCreditsOnScreen: true,
     });
+    tuneTileset(tileset);
     viewer.scene.primitives.add(tileset);
     console.info(`[Meridian] Loaded ${label}`);
     return tileset;
@@ -74,4 +123,28 @@ async function tryLoad(
     console.warn(`[Meridian] Failed to load ${label}:`, err);
     return null;
   }
+}
+
+/**
+ * Hide the tileset when the camera is far enough out that Bing imagery
+ * is indistinguishable from 3D Tiles, and show it again on zoom-in.
+ * Returns a cleanup fn that removes the camera listener.
+ */
+export function installAltitudeGate(
+  viewer: Viewer,
+  tileset: Cesium3DTileset,
+  hideAbove = TILESET_HIDE_ALTITUDE_M
+): () => void {
+  const update = () => {
+    const carto = viewer.camera.positionCartographic;
+    if (!carto) return;
+    const shouldShow = carto.height < hideAbove;
+    if (tileset.show !== shouldShow) {
+      tileset.show = shouldShow;
+    }
+  };
+  // Initial check + subscribe to camera moves
+  update();
+  const remove = viewer.camera.changed.addEventListener(update);
+  return () => remove();
 }

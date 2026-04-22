@@ -8,7 +8,7 @@ import {
   ScreenSpaceEventType,
   type Viewer as CesiumViewer,
 } from 'cesium';
-import { loadWorldTileset } from '@/lib/globe/tilesets';
+import { loadWorldTileset, installAltitudeGate } from '@/lib/globe/tilesets';
 import { VesselLayer, AircraftLayer, SatelliteLayer } from './layers';
 import { useViewportBbox } from '@/hooks/useViewportBbox';
 import { useSelectionStore, type SelectionKind } from '@/store/selection';
@@ -68,10 +68,18 @@ export function Globe() {
       viewer.scene.skyAtmosphere.show = true;
     }
 
-    // Kick off tileset load — fire-and-forget
-    void loadWorldTileset(viewer);
+    // Kick off tileset load and wire an altitude gate so we don't stream
+    // photorealistic tiles during wide-angle globe spins (Bing imagery is
+    // indistinguishable at that distance, and Google's Map Tiles API is
+    // metered per request).
+    let detachGate: (() => void) | undefined;
+    void loadWorldTileset(viewer).then((tileset) => {
+      if (tileset) detachGate = installAltitudeGate(viewer, tileset);
+    });
 
-    // Cleanup: Resium handles viewer destruction on unmount.
+    return () => {
+      detachGate?.();
+    };
   }, [viewer]);
 
   // Centralized click-to-select — dispatches to selection store based on

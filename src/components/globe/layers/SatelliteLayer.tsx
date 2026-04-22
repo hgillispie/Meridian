@@ -16,6 +16,7 @@ import { useLayerStore } from '@/store/layers';
 import { useSatellites, filterCommercialEo } from '@/hooks/useSatellites';
 import { useSatelliteStore } from '@/store/satellites';
 import { useSelectionStore } from '@/store/selection';
+import { satelliteMarker, satKindFromCategory } from '@/lib/globe/markers';
 import {
   prepareSatrec,
   propagateToGeodetic,
@@ -23,32 +24,14 @@ import {
   type PreparedSat,
 } from '@/lib/orbit/propagate';
 
-const iconCache = new Map<string, string>();
-function satSvg(color: string, category: SatelliteCategory): string {
-  const key = `${color}:${category}`;
-  const cached = iconCache.get(key);
-  if (cached) return cached;
-  // Optical: diamond. SAR/radar: chevron. Default: square.
-  let body: string;
-  if (category === 'eo-radar') {
-    body = `<path d='M8 1 L14 8 L8 15 L2 8 Z M8 4 L11 8 L8 12 L5 8 Z' fill='${color}' stroke='#07090D' stroke-width='0.6' stroke-linejoin='round'/>`;
-  } else if (category === 'eo-optical') {
-    body = `<path d='M8 1 L14 8 L8 15 L2 8 Z' fill='${color}' stroke='#07090D' stroke-width='0.6' stroke-linejoin='round'/>`;
-  } else {
-    body = `<rect x='2.5' y='2.5' width='11' height='11' rx='1.5' fill='${color}' stroke='#07090D' stroke-width='0.6'/>`;
-  }
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'>${body}</svg>`;
-  const uri = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-  iconCache.set(key, uri);
-  return uri;
-}
-
 export function SatelliteLayer() {
   const enabled = useLayerStore((s) => s.layers.satellites.enabled);
   const { viewer } = useCesium();
   const { satellites } = useSatellites(enabled);
   const setSatellites = useSatelliteStore((s) => s.setSatellites);
   const selection = useSelectionStore((s) => s.selection);
+  const selectedNorad =
+    selection?.kind === 'satellite' ? Number(selection.id) : null;
 
   // Curate to commercial EO subset before rendering.
   const visible = useMemo(() => filterCommercialEo(satellites), [satellites]);
@@ -100,6 +83,7 @@ export function SatelliteLayer() {
       seen.add(sat.noradId);
       const category: SatelliteCategory = sat.category ?? 'other';
       const color = satelliteColor(category);
+      const isSelected = selectedNorad === sat.noradId;
 
       let entity = entityMap.get(sat.noradId);
       if (!entity) {
@@ -119,21 +103,25 @@ export function SatelliteLayer() {
         entity = new CesiumEntity({
           id: `satellite:${sat.noradId}`,
           position: positionCb as unknown as CesiumEntity['position'],
-          billboard: {
-            image: satSvg(color, category),
-            scale: 0.95,
-            horizontalOrigin: HorizontalOrigin.CENTER,
-            verticalOrigin: VerticalOrigin.CENTER,
-            color: Color.WHITE,
-            // Satellites live hundreds of km up — we want the glyph to
-            // always be visible without x-ray through the planet. Small
-            // buffer against depth-test glitches at LEO altitude.
-            disableDepthTestDistance: 100_000,
-          },
         });
         viewer.entities.add(entity);
         entityMap.set(sat.noradId, entity);
       }
+
+      // Re-set billboard each pass so the halo swaps in on selection
+      // without having to recreate the entity (which would lose the
+      // CallbackProperty position binding).
+      entity.billboard = {
+        image: satelliteMarker(color, satKindFromCategory(category), isSelected),
+        scale: isSelected ? 1.05 : 0.95,
+        horizontalOrigin: HorizontalOrigin.CENTER,
+        verticalOrigin: VerticalOrigin.CENTER,
+        color: Color.WHITE,
+        // Satellites live hundreds of km up — we want the glyph to
+        // always be visible without x-ray through the planet. Small
+        // buffer against depth-test glitches at LEO altitude.
+        disableDepthTestDistance: 100_000,
+      } as unknown as typeof entity.billboard;
     }
 
     for (const [id, entity] of entityMap) {
@@ -142,7 +130,7 @@ export function SatelliteLayer() {
         entityMap.delete(id);
       }
     }
-  }, [viewer, enabled, visible, entityMap]);
+  }, [viewer, enabled, visible, entityMap, selectedNorad]);
 
   // Orbit trace — only drawn for the currently selected satellite.
   useEffect(() => {

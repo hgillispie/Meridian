@@ -17,25 +17,17 @@ import { useAisStream } from '@/hooks/useAisStream';
 import type { Bbox } from '@/lib/geo/bbox';
 import { useLayerStore } from '@/store/layers';
 import { useLiveDataStore } from '@/store/liveData';
-
-// Reuse a single chevron SVG billboard image per color to keep GPU memory tame.
-const chevronCache = new Map<string, string>();
-function chevronSvg(color: string): string {
-  const cached = chevronCache.get(color);
-  if (cached) return cached;
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'>
-    <path d='M8 1 L14 13 L8 10 L2 13 Z' fill='${color}' stroke='#07090D' stroke-width='0.8' stroke-linejoin='round'/>
-  </svg>`;
-  const uri = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-  chevronCache.set(color, uri);
-  return uri;
-}
+import { useSelectionStore } from '@/store/selection';
+import { vesselMarker } from '@/lib/globe/markers';
 
 export function VesselLayer({ bbox }: { bbox: Bbox }) {
   const enabled = useLayerStore((s) => s.layers.vessels.enabled);
   const { viewer } = useCesium();
   const { vessels, tick } = useAisStream(bbox, enabled);
   const upsertVessels = useLiveDataStore((s) => s.upsertVessels);
+  const selection = useSelectionStore((s) => s.selection);
+  const selectedMmsi =
+    selection?.kind === 'vessel' ? Number(selection.id) : null;
 
   // Maintain a stable Cesium EntityCollection owned by this layer.
   const entityMap = useMemo(() => new Map<number, CesiumEntity>(), []);
@@ -72,12 +64,13 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
         entity.position = Cartesian3.fromDegrees(v.lon, v.lat) as unknown as typeof entity.position;
       }
       const color = vesselColor(categorizeShipType(v.shipType));
+      const isSelected = selectedMmsi === v.mmsi;
       const rotationRad = CesiumMath.toRadians(-(v.heading ?? v.cog ?? 0));
       entity.billboard = {
-        image: chevronSvg(color),
+        image: vesselMarker(color, isSelected),
         rotation: rotationRad,
         alignedAxis: Cartesian3.ZERO,
-        scale: 0.9,
+        scale: isSelected ? 1.0 : 0.85,
         horizontalOrigin: HorizontalOrigin.CENTER,
         verticalOrigin: VerticalOrigin.CENTER,
         heightReference: HeightReference.CLAMP_TO_GROUND,
@@ -101,7 +94,8 @@ export function VesselLayer({ bbox }: { bbox: Bbox }) {
       }
     }
     // vessels is a stable ref — use `tick` to re-run on every batched update.
-  }, [viewer, tick, vessels, enabled, entityMap]);
+    // `selectedMmsi` re-runs so the halo swaps in immediately on selection.
+  }, [viewer, tick, vessels, enabled, entityMap, selectedMmsi]);
 
   return null;
 }
