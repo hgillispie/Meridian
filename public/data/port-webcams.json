@@ -1,229 +1,229 @@
 {
-  "_note": "Port webcam directory. Each entry points to a port in ports.json via `portCode` (UN/LOCODE). Three source types are supported: `youtube` (iframe embed via videoId or channelId for latest-live), `hls` (direct .m3u8 URL rendered with hls.js), and `image` (single URL that can be refreshed on an interval). Camera location is [lon, lat] and MAY differ from the port centroid — the webcam icon is placed at this spot on the globe. To swap in a real stream: change `type` + `src` (+ `videoId` or `channelId` for youtube) while keeping `id` + `portCode`.",
+  "_note": "Port webcam directory. Each entry points to a port in ports.json via `portCode` (UN/LOCODE). Three source types are supported: `youtube` (iframe embed), `hls` (direct .m3u8 URL rendered with hls.js), and `image` (single URL refreshed on an interval). Camera location is [lon, lat] and MAY differ from the port centroid — the webcam icon is placed at this spot on the globe. Demo-mode image sources use picsum.photos with a port-specific seed so every port shows a stable photo. To swap in a real stream: change `type` + `src` while keeping `id` + `portCode`.",
   "webcams": [
     {
       "id": "sgsin-tuas",
       "portCode": "SGSIN",
       "title": "Singapore — Tuas Megaport",
-      "provider": "Wikimedia / MPA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Singapore_Port.jpg/1280px-Singapore_Port.jpg",
+      "src": "https://picsum.photos/seed/sgsin-tuas/1280/720",
       "location": [103.6409, 1.2589],
       "hero": true,
       "description": "World's second-busiest transshipment hub. Tuas phased opening 2022-2040 consolidating all of Singapore's container ops.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "nlrtm-europoort",
       "portCode": "NLRTM",
       "title": "Rotterdam — Europoort / Maasvlakte",
-      "provider": "Wikimedia / Port of Rotterdam",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Maasvlakte_2_aerial.jpg/1280px-Maasvlakte_2_aerial.jpg",
+      "src": "https://picsum.photos/seed/nlrtm-europoort/1280/720",
       "location": [4.0515, 51.9587],
       "hero": true,
       "description": "Europe's largest port; Maasvlakte 2 is fully automated with AGV yards and remote-operated STS cranes.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "uslax-pier400",
       "portCode": "USLAX",
       "title": "Los Angeles — Pier 400",
-      "provider": "Wikimedia / POLA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Port_of_Los_Angeles_aerial.jpg/1280px-Port_of_Los_Angeles_aerial.jpg",
+      "src": "https://picsum.photos/seed/uslax-pier400/1280/720",
       "location": [-118.2500, 33.7370],
       "hero": true,
       "description": "Largest US container port. Pier 400 (APM Terminals) handles the majority of Asia-West Coast throughput.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "deham-waltershof",
       "portCode": "DEHAM",
       "title": "Hamburg — Waltershof Terminal",
-      "provider": "Wikimedia / HHLA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Hamburg_Hafen_Panorama.jpg/1280px-Hamburg_Hafen_Panorama.jpg",
+      "src": "https://picsum.photos/seed/deham-waltershof/1280/720",
       "location": [9.9296, 53.5384],
       "hero": true,
       "description": "Germany's largest seaport, 110 km inland on the Elbe. HHLA Burchardkai has been semi-automated since 2011.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "cnsha-yangshan",
       "portCode": "CNSHA",
       "title": "Shanghai — Yangshan Deep-Water Port",
-      "provider": "Wikimedia / SIPG",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Yangshan_Deep-Water_Port_aerial.jpg/1280px-Yangshan_Deep-Water_Port_aerial.jpg",
+      "src": "https://picsum.photos/seed/cnsha-yangshan/1280/720",
       "location": [122.0700, 30.6289],
       "description": "World's busiest container port since 2010. Phase IV (opened 2017) is the largest fully-automated terminal on Earth.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "hkhkg-kwaichung",
       "portCode": "HKHKG",
       "title": "Hong Kong — Kwai Tsing Terminals",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Kwai_Tsing_Container_Terminals_2019.jpg/1280px-Kwai_Tsing_Container_Terminals_2019.jpg",
+      "src": "https://picsum.photos/seed/hkhkg-kwaichung/1280/720",
       "location": [114.1253, 22.3437],
       "description": "Eight terminals along Kwai Chung and Tsing Yi. Declining throughput as Shenzhen and Guangzhou overtake.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "krpus-sinhang",
       "portCode": "KRPUS",
       "title": "Busan — New Port (Sinhang)",
-      "provider": "Wikimedia / BPA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Busan_New_Port_aerial.jpg/1280px-Busan_New_Port_aerial.jpg",
+      "src": "https://picsum.photos/seed/krpus-sinhang/1280/720",
       "location": [128.8100, 35.0780],
       "description": "Transpacific transshipment hub; Sinhang handles most of Busan's 23M TEU / year throughput.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "beanr-deurganck",
       "portCode": "BEANR",
       "title": "Antwerp — Deurganck Dock",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Port_of_Antwerp_aerial.jpg/1280px-Port_of_Antwerp_aerial.jpg",
+      "src": "https://picsum.photos/seed/beanr-deurganck/1280/720",
       "location": [4.2833, 51.2833],
       "description": "Europe's second-largest port. Deurganckdok handles the largest call sizes on the Scheldt.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "esvlc-muelle",
       "portCode": "ESVLC",
       "title": "Valencia — Muelle Príncipe Felipe",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Port_of_Valencia_aerial.jpg/1280px-Port_of_Valencia_aerial.jpg",
+      "src": "https://picsum.photos/seed/esvlc-muelle/1280/720",
       "location": [-0.3109, 39.4500],
       "description": "Western Mediterranean's busiest container port; major Maersk and MSC calls.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "pamit-gatun",
       "portCode": "PAMIT",
       "title": "Panama — Gatun Locks",
-      "provider": "Wikimedia / ACP",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Panama_Canal_Gatun_Locks.jpg/1280px-Panama_Canal_Gatun_Locks.jpg",
+      "src": "https://picsum.photos/seed/pamit-gatun/1280/720",
       "location": [-79.9200, 9.2700],
       "description": "Northern entrance of the Panama Canal. 2016 Neopanamax locks added a third, larger lane.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "egpsd-suez-north",
       "portCode": "EGPSD",
       "title": "Suez Canal — Port Said North",
-      "provider": "Wikimedia / SCA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Suez_Canal_view.jpg/1280px-Suez_Canal_view.jpg",
+      "src": "https://picsum.photos/seed/egpsd-suez-north/1280/720",
       "location": [32.3000, 31.2600],
       "description": "Northern entrance of the Suez Canal; SCVTS radar and pilot station.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "aedxb-jebelali",
       "portCode": "AEDXB",
       "title": "Jebel Ali — DP World Terminal 3",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Jebel_Ali_Port_aerial.jpg/1280px-Jebel_Ali_Port_aerial.jpg",
+      "src": "https://picsum.photos/seed/aedxb-jebelali/1280/720",
       "location": [55.0533, 24.9850],
       "description": "Largest man-made harbor in the world. DP World's flagship operation on the Persian Gulf.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "ussea-t5",
       "portCode": "USSEA",
       "title": "Seattle–Tacoma — Terminal 5",
-      "provider": "Wikimedia / NWSA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Port_of_Seattle.jpg/1280px-Port_of_Seattle.jpg",
+      "src": "https://picsum.photos/seed/ussea-t5/1280/720",
       "location": [-122.3450, 47.5781],
       "description": "PNW gateway for Alaska and Transpacific services. T5 reopened 2022 after $500M modernization.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "usnyc-apmmaher",
       "portCode": "USNYC",
       "title": "New York / NJ — APM Terminal Elizabeth",
-      "provider": "Wikimedia / PANYNJ",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Port_Newark_aerial.jpg/1280px-Port_Newark_aerial.jpg",
+      "src": "https://picsum.photos/seed/usnyc-apmmaher/1280/720",
       "location": [-74.1600, 40.6770],
       "description": "East Coast's busiest container port. Bayonne Bridge raised in 2017 to clear Neopanamax vessels.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "jpukb-rokko",
       "portCode": "JPUKB",
       "title": "Kobe — Rokko Island",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Port_of_Kobe_aerial.jpg/1280px-Port_of_Kobe_aerial.jpg",
+      "src": "https://picsum.photos/seed/jpukb-rokko/1280/720",
       "location": [135.2490, 34.6687],
       "description": "Recovered to ~50% of pre-1995-earthquake volume; major Japanese transshipment hub on the Seto Inland Sea.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "zadur-pier2",
       "portCode": "ZADUR",
       "title": "Durban — Pier 2 Container Terminal",
-      "provider": "Wikimedia / Transnet",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Durban_Harbour.jpg/1280px-Durban_Harbour.jpg",
+      "src": "https://picsum.photos/seed/zadur-pier2/1280/720",
       "location": [31.0407, -29.8785],
       "description": "Busiest port in Sub-Saharan Africa. Chronic congestion; ~70% of SA container volume.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "brsvz-santos",
       "portCode": "BRSSZ",
       "title": "Santos — Margem Direita",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Porto_de_Santos_aerial.jpg/1280px-Porto_de_Santos_aerial.jpg",
+      "src": "https://picsum.photos/seed/brssz-santos/1280/720",
       "location": [-46.3100, -23.9500],
       "description": "Largest port in Latin America; handles ~30% of Brazilian international trade.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "grpir-ict",
       "portCode": "GRPIR",
       "title": "Piraeus — Container Terminal (COSCO)",
-      "provider": "Wikimedia / PCT",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Port_of_Piraeus.jpg/1280px-Port_of_Piraeus.jpg",
+      "src": "https://picsum.photos/seed/grpir-ict/1280/720",
       "location": [23.5700, 37.9500],
       "description": "COSCO majority stake since 2016. Eastern Mediterranean's fastest-growing box port.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "itgoa-psa",
       "portCode": "ITGOA",
       "title": "Genoa — PSA Genova Pra'",
-      "provider": "Wikimedia",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Porto_di_Genova.jpg/1280px-Porto_di_Genova.jpg",
+      "src": "https://picsum.photos/seed/itgoa-psa/1280/720",
       "location": [8.7800, 44.4200],
       "description": "Italy's busiest container port. Morandi Bridge collapse in 2018 temporarily severed road access.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     },
     {
       "id": "cavan-deltaport",
       "portCode": "CAVAN",
       "title": "Vancouver — Roberts Bank / Deltaport",
-      "provider": "Wikimedia / VFPA",
+      "provider": "Demo placeholder",
       "type": "image",
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Port_of_Vancouver_aerial.jpg/1280px-Port_of_Vancouver_aerial.jpg",
+      "src": "https://picsum.photos/seed/cavan-deltaport/1280/720",
       "location": [-123.1400, 49.0167],
       "description": "Canada's largest port. Deltaport handles the majority of transpacific rail-out containers.",
-      "attribution": "Wikimedia Commons"
+      "attribution": "picsum.photos (demo)"
     }
   ]
 }
