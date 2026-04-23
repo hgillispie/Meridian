@@ -16,8 +16,8 @@ import { fetchOpenMeteoStorms } from '@/lib/api/openMeteo';
  * panel mounts/unmounts.
  */
 export function useLiveDisruptions() {
-  const upsertMany = useDisruptionStore((s) => s.upsertMany);
-  const push = useEventsStore((s) => s.push);
+  const upsertDisruptions = useDisruptionStore((s) => s.upsertMany);
+  const upsertEvents = useEventsStore((s) => s.upsertMany);
 
   const noaa = useQuery({
     queryKey: ['disruptions', 'noaa'],
@@ -33,33 +33,36 @@ export function useLiveDisruptions() {
     staleTime: 30 * 60_000,
   });
 
+  // Upsert into both stores on each refetch. Events store merges by id so
+  // re-pushing the same disruption on every poll no longer reshuffles the
+  // list — only genuinely new events cause a visible reordering.
   useEffect(() => {
     if (!noaa.data) return;
-    upsertMany(noaa.data);
-    for (const d of noaa.data) {
-      push({
+    upsertDisruptions(noaa.data);
+    upsertEvents(
+      noaa.data.map((d) => ({
         id: `disruption:${d.id}`,
-        kind: 'weather',
+        kind: 'weather' as const,
         title: d.title,
         detail: d.detail,
         startedAt: d.startedAt,
         endedAt: d.endedAt,
-      });
-    }
-  }, [noaa.data, upsertMany, push]);
+      }))
+    );
+  }, [noaa.data, upsertDisruptions, upsertEvents]);
 
   useEffect(() => {
     if (!openMeteo.data) return;
-    upsertMany(openMeteo.data);
-    for (const d of openMeteo.data) {
-      push({
+    upsertDisruptions(openMeteo.data);
+    upsertEvents(
+      openMeteo.data.map((d) => ({
         id: `disruption:${d.id}`,
-        kind: 'weather',
+        kind: 'weather' as const,
         title: d.title,
         detail: d.detail,
         startedAt: d.startedAt,
         endedAt: d.endedAt,
-      });
-    }
-  }, [openMeteo.data, upsertMany, push]);
+      }))
+    );
+  }, [openMeteo.data, upsertDisruptions, upsertEvents]);
 }

@@ -16,11 +16,19 @@ import { useChokepointData } from '@/hooks/useChokepointData';
 import { useChokepointMetrics } from '@/hooks/useChokepointMetrics';
 import { useLayerStore } from '@/store/layers';
 import { useSelectionStore } from '@/store/selection';
+import { useDisruptionStore } from '@/store/disruptions';
+import { deriveChokepointStatus } from '@/lib/globe/chokepointStatus';
+import { pointInPolygon } from '@/lib/geo/pointInPolygon';
 
 /**
  * Render chokepoint polygons + name labels on the globe. Colour is
- * derived from the current "vessels inside" count vs. the baseline —
- * fewer vessels than expected = amber/red, nominal = mint.
+ * derived from the unified status helper (nominal/elevated/congested/
+ * critical/stale) so the globe fill and the BottomDock legend agree.
+ *
+ * Critical status is triggered either by a >50 % transit collapse OR by
+ * an overlapping high-severity disruption (e.g. piracy zone over Bab-el-
+ * Mandeb). That's why Bab-el-Mandeb flashes red even when its transit
+ * count looks nominal in isolation.
  *
  * Polygons are intentionally low-opacity (15 %) so they read as context
  * rather than noise. Selected chokepoint gets a brighter outline.
@@ -35,9 +43,20 @@ export function ChokepointsLayer() {
   const features = useChokepointStore((s) => s.features);
   const metrics = useChokepointStore((s) => s.metrics);
   const baselines = useChokepointStore((s) => s.baselines);
+  const disruptions = useDisruptionStore((s) => s.disruptions);
   const selection = useSelectionStore((s) => s.selection);
   const selectedId =
     selection?.kind === 'chokepoint' ? selection.id : null;
+
+  // Pre-filter high-severity disruptions; recomputed whenever the
+  // disruption store changes. Cheap vs re-scanning on every feature.
+  const highSeverity = useMemo(
+    () =>
+      Object.values(disruptions).filter(
+        (d) => d.severity === 'high' && (d.endedAt === undefined || d.endedAt > Date.now())
+      ),
+    [disruptions]
+  );
 
   const entityMap = useMemo(() => new Map<string, CesiumEntity>(), []);
 
@@ -52,7 +71,19 @@ export function ChokepointsLayer() {
     for (const f of features) {
       const metric = metrics[f.id];
       const baseline = baselines[f.id];
-      const rgb = statusColor(metric?.vesselsInside ?? 0, baseline?.typicalQueue ?? 0);
+
+      // Overlap = either disruption center is inside the chokepoint, or
+      // chokepoint center is inside the disruption. Good enough for the
+      // coarse polygons we ship; a proper polygon-intersect would be
+      // overkill for 8 chokepoints × ~20 active disruptions.
+      const overlapping = highSeverity.some(
+        (d) =>
+          pointInPolygon(d.center, f.polygon) ||
+          pointInPolygon(f.center, d.polygon)
+      );
+
+      const statusInfo = deriveChokepointStatus(metric, baseline, overlapping);
+      const rgb = statusInfo.color;
       const fill = Color.fromCssColorString(rgb).withAlpha(0.15 * intensity);
       const outline = Color.fromCssColorString(rgb).withAlpha(
         selectedId === f.id ? 0.95 : 0.6
@@ -105,18 +136,17 @@ export function ChokepointsLayer() {
         disableDepthTestDistance: 5_000_000,
       } as unknown as typeof entity.label;
     }
-  }, [viewer, enabled, features, metrics, baselines, selectedId, intensity, entityMap]);
+  }, [
+    viewer,
+    enabled,
+    features,
+    metrics,
+    baselines,
+    highSeverity,
+    selectedId,
+    intensity,
+    entityMap,
+  ]);
 
   return null;
-}
-
-/**
- * Map vessels-inside count vs typical queue size to a status color.
- * Empty / stale = dim slate; normal traffic = mint; heavy queue = amber.
- */
-function statusColor(inside: number, typicalQueue: number): string {
-  if (inside === 0) return '#64748B'; // slate — no data / empty
-  if (typicalQueue > 0 && inside > typicalQueue * 3) return '#F59E0B'; // amber — congested
-  if (typicalQueue > 0 && inside > typicalQueue * 1.5) return '#FACC15'; // yellow — elevated
-  return '#00E5A8'; // mint — nominal
 }

@@ -1,4 +1,13 @@
-import { Stack, Text, Group, Switch, Divider, ScrollArea, Slider } from '@mantine/core';
+import {
+  Stack,
+  Text,
+  Group,
+  Switch,
+  Divider,
+  ScrollArea,
+  Slider,
+  Tooltip,
+} from '@mantine/core';
 import {
   Ship,
   Plane,
@@ -19,27 +28,89 @@ type LayerDef = {
   label: string;
   icon: LucideIcon;
   phase: number;
+  /** One-line practical-use description shown on hover. */
+  help: string;
   /** Layers whose intensity slider actually drives visible output today. */
   liveIntensity?: boolean;
 };
 
 const LAYERS: LayerDef[] = [
-  { id: 'vessels', label: 'Vessels (AIS)', icon: Ship, phase: 2, liveIntensity: true },
-  { id: 'aircraft', label: 'Aircraft (ADS-B)', icon: Plane, phase: 2, liveIntensity: true },
+  {
+    id: 'vessels',
+    label: 'Vessels (AIS)',
+    icon: Ship,
+    phase: 2,
+    liveIntensity: true,
+    help: 'Live cargo, tanker, and passenger ships from AISStream.io. Click any vessel for destination, course, and speed.',
+  },
+  {
+    id: 'aircraft',
+    label: 'Aircraft (ADS-B)',
+    icon: Plane,
+    phase: 2,
+    liveIntensity: true,
+    help: 'Live flights from OpenSky Network. Cargo carriers (FedEx, UPS, DHL, etc.) are highlighted in mint.',
+  },
   {
     id: 'satellites',
     label: 'Earth-obs satellites',
     icon: Satellite,
     phase: 3,
     liveIntensity: true,
+    help: 'Commercial Earth-observation constellations (Sentinel, Landsat, Planet, Capella, ICEYE). Click for next overpass over your focus.',
   },
-  { id: 'webcams', label: 'Port webcams', icon: Camera, phase: 6, liveIntensity: true },
-  { id: 'gps', label: 'GPS integrity', icon: Radio, phase: 8 },
-  { id: 'disruptions', label: 'Disruption zones', icon: AlertTriangle, phase: 5 },
-  { id: 'lanes', label: 'Vessel routes', icon: Route, phase: 5, liveIntensity: false },
-  { id: 'chokepoints', label: 'Chokepoints', icon: Anchor, phase: 5 },
-  { id: 'weather', label: 'Weather', icon: Wind, phase: 5, liveIntensity: true },
-  { id: 'traffic', label: 'Surface traffic', icon: Truck, phase: 6 },
+  {
+    id: 'webcams',
+    label: 'Port webcams',
+    icon: Camera,
+    phase: 6,
+    liveIntensity: true,
+    help: 'Live HLS streams projected onto the 3D globe for a handful of hero ports. Use when you need visual confirmation of congestion.',
+  },
+  {
+    id: 'gps',
+    label: 'GPS integrity',
+    icon: Radio,
+    phase: 8,
+    help: 'Amber choropleth where ADS-B NIC values suggest jamming or spoofing. Turn on before flying through the Black Sea or the Persian Gulf.',
+  },
+  {
+    id: 'disruptions',
+    label: 'Disruption zones',
+    icon: AlertTriangle,
+    phase: 5,
+    help: 'Pulsing polygons from NOAA/NWS marine alerts, Open-Meteo storm outlooks, piracy reports, and curated demo events.',
+  },
+  {
+    id: 'lanes',
+    label: 'Vessel routes',
+    icon: Route,
+    phase: 5,
+    liveIntensity: false,
+    help: 'Draws a great-circle "planned route" from the selected vessel to its AIS-declared destination port.',
+  },
+  {
+    id: 'chokepoints',
+    label: 'Chokepoints',
+    icon: Anchor,
+    phase: 5,
+    help: 'Suez, Panama, Hormuz, Malacca, Bosphorus, Bab-el-Mandeb, Dover, Cape of Good Hope. Colour reflects traffic vs baseline — see legend in bottom dock.',
+  },
+  {
+    id: 'weather',
+    label: 'Weather',
+    icon: Wind,
+    phase: 5,
+    liveIntensity: true,
+    help: 'RainViewer global precipitation radar tile overlay. Use with disruption zones to cross-check active storms.',
+  },
+  {
+    id: 'traffic',
+    label: 'Surface traffic',
+    icon: Truck,
+    phase: 6,
+    help: 'Road/rail congestion around major port hinterlands. Placeholder — not yet wired to a live source.',
+  },
 ];
 
 export function LeftRail() {
@@ -80,10 +151,19 @@ export function LeftRail() {
                 }}
               >
                 <Group justify="space-between" wrap="nowrap">
-                  <Group gap={8} wrap="nowrap">
-                    <Icon size={14} />
-                    <Text size="xs">{layer.label}</Text>
-                  </Group>
+                  <Tooltip
+                    label={layer.help}
+                    withArrow
+                    position="right"
+                    multiline
+                    w={260}
+                    openDelay={120}
+                  >
+                    <Group gap={8} wrap="nowrap" style={{ cursor: 'help' }}>
+                      <Icon size={14} />
+                      <Text size="xs">{layer.label}</Text>
+                    </Group>
+                  </Tooltip>
                   <Switch
                     size="xs"
                     color="meridian"
@@ -94,18 +174,25 @@ export function LeftRail() {
                 </Group>
                 {showSlider && (
                   <Group gap={8} wrap="nowrap" pl={22}>
-                    <Slider
-                      size="xs"
-                      color="meridian"
-                      value={Math.round(intensity * 100)}
-                      onChange={(v) => setIntensity(layer.id, v / 100)}
-                      min={10}
-                      max={100}
-                      step={5}
-                      style={{ flex: 1 }}
-                      aria-label={`${layer.label} intensity`}
-                      label={(v) => `${v}%`}
-                    />
+                    <Tooltip
+                      label="Visual intensity — lower values dim the layer without hiding it. Useful when stacking multiple overlays."
+                      withArrow
+                      multiline
+                      w={220}
+                    >
+                      <Slider
+                        size="xs"
+                        color="meridian"
+                        value={Math.round(intensity * 100)}
+                        onChange={(v) => setIntensity(layer.id, v / 100)}
+                        min={10}
+                        max={100}
+                        step={5}
+                        style={{ flex: 1 }}
+                        aria-label={`${layer.label} intensity`}
+                        label={(v) => `${v}%`}
+                      />
+                    </Tooltip>
                     <Text
                       size="xs"
                       c="dimmed"
