@@ -134,6 +134,7 @@ function json(status: number, body: unknown): Response {
 
 async function runHandler(req: Request): Promise<Response> {
   const now = Date.now();
+  const diag: Record<string, string | number | boolean> = {};
 
   // Short-circuit while OpenSky is known-overloaded so we don't burn
   // Edge minutes waiting on hanging upstream connections.
@@ -154,16 +155,29 @@ async function runHandler(req: Request): Promise<Response> {
     accept: 'application/json',
   };
 
+  diag.credsPresent =
+    !!process.env.OPENSKY_CLIENT_ID && !!process.env.OPENSKY_CLIENT_SECRET;
+  diag.tokenCached = cachedToken != null && cachedToken.expiresAt > now;
+  diag.tokenFailed = now < tokenFailedUntil;
+
+  const tokenStart = Date.now();
   try {
     const token = await getAccessToken();
-    if (token) headers.authorization = `Bearer ${token}`;
+    diag.tokenMs = Date.now() - tokenStart;
+    if (token) {
+      headers.authorization = `Bearer ${token}`;
+      diag.authMode = 'bearer';
+    } else {
+      diag.authMode = 'anonymous';
+    }
   } catch (err) {
-    // Token fetch failed — log and fall back to anonymous so a transient
-    // Keycloak issue doesn't kill the proxy outright. Anonymous
-    // requests still return some data at a lower rate limit.
+    diag.tokenMs = Date.now() - tokenStart;
+    diag.tokenError = err instanceof Error ? err.message : String(err);
+    diag.authMode = 'anonymous-fallback';
     console.warn('[opensky-proxy] token exchange failed', err);
   }
 
+  const upstreamStart = Date.now();
   let res: Response;
   try {
     res = await fetchWithTimeout(
@@ -171,14 +185,28 @@ async function runHandler(req: Request): Promise<Response> {
       { headers },
       UPSTREAM_FETCH_MS
     );
+    diag.upstreamMs = Date.now() - upstreamStart;
+    diag.upstreamStatus = res.status;
   } catch (err) {
+    diag.upstreamMs = Date.now() - upstreamStart;
+    diag.upstreamError = err instanceof Error ? err.message : String(err);
     console.warn('[opensky-proxy] upstream fetch failed', err);
     overloadedUntil = Date.now() + OVERLOAD_BACKOFF_MS;
-    return json(504, {
-      time: Math.floor(Date.now() / 1000),
-      states: null,
-      upstreamTimeout: true,
-    });
+    return new Response(
+      JSON.stringify({
+        time: Math.floor(Date.now() / 1000),
+        states: null,
+        upstreamTimeout: true,
+      }),
+      {
+        status: 504,
+        headers: {
+          'content-type': 'application/json',
+          'cache-control': 'public, max-age=5, s-maxage=5',
+          'x-proxy-diag': JSON.stringify(diag),
+        },
+      }
+    );
   }
 
   // OpenSky's overload signal: 500 status with `{ overloaded: true }` body.
@@ -211,6 +239,7 @@ async function runHandler(req: Request): Promise<Response> {
   );
   // 5-second cache — matches the client poll cadence so we don't spam OpenSky
   resHeaders.set('cache-control', 'public, max-age=5, s-maxage=5');
+  resHeaders.set('x-proxy-diag', JSON.stringify(diag));
 
   return new Response(res.body, {
     status: res.status,
