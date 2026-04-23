@@ -18,16 +18,23 @@
 
 export const config = {
   runtime: 'edge',
+  // OpenSky + Keycloak are hosted in Germany. Pinning the Edge Function
+  // to Frankfurt drops round-trip latency from IAD's ~120 ms+frequent
+  // 4-10 s tail to Frankfurt's ~10 ms. Empirically, Keycloak from IAD
+  // was timing out at 4 s; from FRA it lands in well under 1 s.
+  regions: ['fra1'],
 };
 
 const STATES_URL = 'https://opensky-network.org/api/states/all';
 const TOKEN_URL =
   'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token';
 
-// Timeouts, all well below Vercel's 25 s edge cap.
-const TOKEN_FETCH_MS = 4_000;
-const UPSTREAM_FETCH_MS = 9_000;
-const HANDLER_DEADLINE_MS = 12_000;
+// Timeouts, all well below Vercel's 25 s edge cap. Even with Frankfurt
+// region pinning OpenSky can sit on a request for several seconds when
+// they're under load, so we give meaningful headroom.
+const TOKEN_FETCH_MS = 8_000;
+const UPSTREAM_FETCH_MS = 14_000;
+const HANDLER_DEADLINE_MS = 22_000;
 
 // If OpenSky (or Keycloak) is overloaded, back off for this long on the
 // warm isolate. Long enough that repeat retries can't pile up, short
