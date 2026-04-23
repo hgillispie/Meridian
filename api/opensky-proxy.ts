@@ -132,9 +132,10 @@ function json(status: number, body: unknown): Response {
   });
 }
 
-async function runHandler(req: Request): Promise<Response> {
+type Diag = Record<string, string | number | boolean>;
+
+async function runHandler(req: Request, diag: Diag): Promise<Response> {
   const now = Date.now();
-  const diag: Record<string, string | number | boolean> = {};
 
   // Short-circuit while OpenSky is known-overloaded so we don't burn
   // Edge minutes waiting on hanging upstream connections.
@@ -248,18 +249,34 @@ async function runHandler(req: Request): Promise<Response> {
 }
 
 export default async function handler(req: Request): Promise<Response> {
+  const diag: Diag = {};
   try {
-    return await withDeadline(runHandler(req), HANDLER_DEADLINE_MS, 'handler');
+    return await withDeadline(
+      runHandler(req, diag),
+      HANDLER_DEADLINE_MS,
+      'handler'
+    );
   } catch (err) {
     // Anything escaping the inner runHandler (deadline, unexpected throw)
     // gets absorbed into an empty 503 so the client's query gracefully
     // shows zero aircraft rather than erroring out of the whole layer.
+    diag.handlerError = err instanceof Error ? err.message : String(err);
     console.warn('[opensky-proxy] handler error', err);
     overloadedUntil = Date.now() + OVERLOAD_BACKOFF_MS;
-    return json(503, {
-      time: Math.floor(Date.now() / 1000),
-      states: null,
-      handlerDeadline: true,
-    });
+    return new Response(
+      JSON.stringify({
+        time: Math.floor(Date.now() / 1000),
+        states: null,
+        handlerDeadline: true,
+      }),
+      {
+        status: 503,
+        headers: {
+          'content-type': 'application/json',
+          'cache-control': 'public, max-age=5, s-maxage=5',
+          'x-proxy-diag': JSON.stringify(diag),
+        },
+      }
+    );
   }
 }
